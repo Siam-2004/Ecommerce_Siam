@@ -1,24 +1,4 @@
-# Virtual Environment
-venv/
-env/
-.venv/
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Django
-
-# Environment variables
-.env
-
-# IDE
-.idea/
-.vscode/
-
-# macOS
-.DS_Store
 
 # Static/Media generated files
 
