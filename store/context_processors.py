@@ -1,11 +1,11 @@
 from store.cart import Cart
-from store.models import StoreSetting
+from store.models import StoreSetting, Category
 
 
 def store_context(request):
     """
     Global context processor providing store-wide settings, cart state,
-    and free shipping calculations across all templates.
+    dynamic categories, and free shipping calculations across all templates.
     """
     cart = Cart(request)
 
@@ -23,10 +23,18 @@ def store_context(request):
     is_free_shipping_active = store_setting.is_free_shipping_active if store_setting else True
     free_shipping_threshold = float(store_setting.free_shipping_threshold) if store_setting else 3000.00
 
+    try:
+        all_categories = Category.objects.all()
+    except Exception:
+        all_categories = []
+
     return {
         'cart': cart,
         'cart_count': len(cart),
         'store_setting': store_setting,
         'is_free_shipping_active': is_free_shipping_active,
         'free_shipping_threshold': free_shipping_threshold,
+        'all_categories': all_categories,
+        'categories': all_categories,
     }
+

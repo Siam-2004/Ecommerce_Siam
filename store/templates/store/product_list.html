@@ -20,18 +20,87 @@
         .nav-item > a { color: #a1a1aa; text-decoration: none; font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; transition: 0.3s; font-weight: 500; height: 100%; display: flex; align-items: center; }
         .nav-item:hover > a { color: #ffffff; }
 
-        /* Mega Menu */
-        .mega-menu { position: absolute; top: 75px; left: 0; width: 100%; background: #050505; border-bottom: 1px solid #1a1a1a; box-shadow: 0 20px 40px rgba(0,0,0,0.9); padding: 40px 0; opacity: 0; visibility: hidden; transform: translateY(15px); transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); z-index: -1; }
-        .nav-item.has-mega:hover .mega-menu { opacity: 1; visibility: visible; transform: translateY(0); }
-        .mega-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; padding: 0 50px; }
-        .mega-col { display: flex; flex-direction: column; gap: 12px; }
-        .mega-col h4 { color: #fff; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #222; }
-        .mega-col a { color: #94a3b8; font-size: 13px; text-decoration: none; transition: 0.3s; display: inline-block; text-transform: none; letter-spacing: 0.5px; }
-        .mega-col a:hover { color: #22c55e; transform: translateX(5px); }
-        .promo-col { position: relative; width: 320px; height: 200px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
-        .promo-col img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .promo-col:hover img { transform: scale(1.08); }
-        .promo-text { position: absolute; bottom: 15px; left: 15px; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); color: #fff; padding: 8px 15px; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; }
+        /* Shop Dropdown */
+        .nav-item.has-dropdown { position: relative; }
+        .nav-item.has-dropdown:hover .shop-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        .nav-item.has-dropdown:hover > a .dropdown-arrow { transform: rotate(180deg); color: #22c55e; }
+        .dropdown-arrow { font-size: 10px; margin-left: 5px; transition: transform 0.3s ease, color 0.3s ease; }
+
+        .shop-dropdown {
+            position: absolute;
+            top: 75px;
+            left: 0;
+            min-width: 260px;
+            background: rgba(13, 19, 34, 0.98);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(34, 197, 94, 0.12);
+            padding: 8px 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 1001;
+        }
+        .shop-dropdown-inner {
+            max-height: 380px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #22c55e rgba(255,255,255,0.05);
+        }
+        .shop-dropdown-inner::-webkit-scrollbar { width: 5px; }
+        .shop-dropdown-inner::-webkit-scrollbar-thumb { background: #22c55e; border-radius: 4px; }
+        .shop-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 20px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            transition: all 0.25s ease;
+        }
+        .shop-dropdown-item:hover {
+            background: rgba(34, 197, 94, 0.12);
+            color: #22c55e;
+            padding-left: 24px;
+        }
+        .shop-dropdown-item i {
+            color: #94a3b8;
+            font-size: 14px;
+            width: 18px;
+            text-align: center;
+            transition: color 0.25s ease;
+        }
+        .shop-dropdown-item:hover i {
+            color: #22c55e;
+        }
+        .shop-cat-icon-img {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .shop-dropdown-item.all-products-item {
+            font-weight: 600;
+            color: #ffffff;
+        }
+        .shop-dropdown-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 6px 14px;
+        }
+        .shop-dropdown-empty {
+            padding: 15px 20px;
+            color: #64748b;
+            font-size: 13px;
+            text-align: center;
+        }
 
         .nav-center { flex: 1; display: flex; justify-content: center; }
         .nav-logo { font-size: 26px; font-weight: 700; color: #ffffff; text-decoration: none; letter-spacing: 4px; }
@@ -253,27 +322,32 @@
             <div class="nav-item">
                 <a href="{% url 'product_list' %}">Home</a>
             </div>
-            <div class="nav-item has-mega">
-                <a href="#">Men <i class="fa-solid fa-angle-down" style="font-size: 10px; margin-left: 5px; margin-top: 2px;"></i></a>
-                <div class="mega-menu">
-                    <div class="mega-content">
-                        <div class="mega-col"><h4>Clothing</h4><a href="#">Premium Panjabi</a><a href="#">Casual Shirts</a></div>
-                        <div class="mega-col"><h4>Footwear</h4><a href="#">Formal Shoes</a><a href="#">Sneakers</a></div>
-                        <div class="mega-col promo-col"><img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=600&auto=format&fit=crop" alt="Men Promo"><div class="promo-text">Men's New Arrivals</div></div>
-                    </div>
-                </div>
-            </div>
-            <div class="nav-item has-mega">
-                <a href="#">Women <i class="fa-solid fa-angle-down" style="font-size: 10px; margin-left: 5px; margin-top: 2px;"></i></a>
-                <div class="mega-menu">
-                    <div class="mega-content">
-                        <div class="mega-col"><h4>Ethnic Wear</h4><a href="#">Premium Sarees</a><a href="#">Salwar Kameez</a></div>
-                        <div class="mega-col promo-col"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=600&auto=format&fit=crop" alt="Women Promo"><div class="promo-text">Summer Sale 50% Off</div></div>
+            <div class="nav-item has-dropdown">
+                <a href="{% url 'product_list' %}">Shop <i class="fa-solid fa-angle-down dropdown-arrow"></i></a>
+                <div class="shop-dropdown">
+                    <div class="shop-dropdown-inner">
+                        <a href="{% url 'product_list' %}" class="shop-dropdown-item all-products-item">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span>All Products</span>
+                        </a>
+                        <div class="shop-dropdown-divider"></div>
+                        {% for cat in all_categories %}
+                        <a href="{% url 'product_list_by_category' cat.slug %}" class="shop-dropdown-item">
+                            {% if cat.image %}
+                                <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="shop-cat-icon-img">
+                            {% else %}
+                                <i class="fa-solid fa-tag"></i>
+                            {% endif %}
+                            <span>{{ cat.name }}</span>
+                        </a>
+                        {% empty %}
+                        <div class="shop-dropdown-empty">কোনো ক্যাটাগরি পাওয়া যায়নি</div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
             <div class="nav-item">
-                <a href="#">Kids</a>
+                <a href="#footer-contact" onclick="smoothScrollToContact(event)">Contact</a>
             </div>
         </div>
 
