@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History - Premium Store</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #090d16; color: #ffffff; min-height: 100vh; padding-bottom: 50px; }
+
+        /* Navbar */
+        .navbar { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 40px; }
+        .logo { font-size: 24px; font-weight: 700; color: #22c55e; text-decoration: none; }
+        .back-link { color: #cbd5e1; text-decoration: none; transition: 0.3s; font-size: 15px; }
+        .back-link:hover { color: #22c55e; }
+
+        /* Dashboard Layout */
+        .dashboard-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
+
+        /* Glass Panel Reusable */
+        .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+
+        /* Sidebar Nav */
+        .sidebar-nav { display: flex; flex-direction: column; gap: 10px; }
+        .nav-item { padding: 15px 20px; border-radius: 12px; color: #cbd5e1; text-decoration: none; font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 15px; transition: all 0.3s ease; border: 1px solid transparent; }
+        .nav-item i { font-size: 18px; width: 25px; text-align: center; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; transform: translateX(5px); }
+        .nav-item.active { background: rgba(34, 197, 94, 0.1); color: #22c55e; border-color: rgba(34, 197, 94, 0.3); box-shadow: 0 5px 15px rgba(34, 197, 94, 0.1); }
+        .nav-item.logout { color: #ef4444; margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.1); border-radius: 0 0 12px 12px; }
+        .nav-item.logout:hover { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+
+        /* Order History Specific Styles */
+        .page-title { font-size: 22px; color: #f8fafc; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .page-title i { color: #22c55e; }
+
+        .order-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .order-card:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(34, 197, 94, 0.3); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+
+        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+        .order-id { font-size: 16px; font-weight: 600; color: #f8fafc; }
+        .order-date { font-size: 13px; color: #94a3b8; }
+
+        .order-body { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; align-items: center; margin-bottom: 15px; }
+        .info-block { display: flex; flex-direction: column; gap: 5px; }
+        .info-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        .info-value { font-size: 15px; font-weight: 500; color: #cbd5e1; }
+
+        /* Status Badges */
+        .status-badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; text-align: center; }
+        .status-pending { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .status-processing { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .status-delivered { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status-cancelled { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        /* === Ordered Items & Review Button Styles === */
+        .order-items-wrapper { border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px; margin-top: 15px; }
+        .ordered-item-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.03); }
+        .item-basic-info { display: flex; align-items: center; gap: 12px; }
+        .item-img { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; }
+        .item-placeholder { width: 45px; height: 45px; border-radius: 6px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #64748b; }
+        .item-name { color: #f8fafc; font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+        .item-meta { color: #94a3b8; font-size: 12px; }
+
+        .btn-review { background: rgba(250, 204, 21, 0.1); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
+        .btn-review:hover { background: #facc15; color: #090d16; box-shadow: 0 5px 15px rgba(250, 204, 21, 0.2); }
+
+        /* Invoice Button Styles */
+        .order-footer { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: flex-end; }
+        .btn-invoice { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 15px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-invoice:hover { background: #ef4444; color: #fff; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3); }
+
+        .empty-state { text-align: center; padding: 40px 20px; color: #94a3b8; }
+        .empty-state i { font-size: 50px; color: rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .btn-shop { display: inline-block; margin-top: 15px; padding: 10px 25px; background: #22c55e; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: 0.3s; }
+        .btn-shop:hover { background: #16a34a; }
+
+        @media (max-width: 768px) {
+            .dashboard-container { grid-template-columns: 1fr; }
+            .order-body { grid-template-columns: 1fr; gap: 10px; }
+            .sidebar { margin-bottom: 20px; }
+            .ordered-item-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .btn-review { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="{% url 'product_list' %}" class="logo">E-Store<span style="color:white;">.</span></a>
+        <a href="{% url 'product_list' %}" class="back-link"><i class="fa-solid fa-house"></i> হোম পেজে যান</a>
+    </nav>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+
+        <!-- Sidebar Navigation -->
+        <div class="glass-panel sidebar" style="padding: 20px 15px; height: fit-content;">
+            <div class="sidebar-nav">
+                <a href="{% url 'profile' %}" class="nav-item">
+                    <i class="fa-solid fa-user-shield"></i> আমার প্রোফাইল
+                </a>
+                <a href="{% url 'order_history' %}" class="nav-item active">
+                    <i class="fa-solid fa-box-open"></i> অর্ডার হিস্ট্রি
+                </a>
+                <a href="{% url 'user_address' %}" class="nav-item">
+                    <i class="fa-solid fa-location-dot"></i> ডেলিভারি ঠিকানা
+                </a>
+                <!-- === নতুন ট্র্যাকিং মেনু === -->
+                <a href="{% url 'track_order' %}" class="nav-item">
+                    <i class="fa-solid fa-truck-fast"></i> অর্ডার ট্র্যাক করুন
+                </a>
+                <!-- =========================== -->
+                <a href="{% url 'logout' %}" class="nav-item logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> লগআউট করুন
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content Area: Order History -->
+        <div class="glass-panel main-content">
+            <h2 class="page-title"><i class="fa-solid fa-clock-rotate-left"></i> আপনার অর্ডার সমূহ</h2>
+
+            <div class="orders-list">
+                <!-- Django For Loop -->
+                {% for order in orders %}
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">অর্ডার #{{ order.id }}</span>
+                        <!-- Date Formatting -->
+                        <span class="order-date"><i class="fa-regular fa-calendar-days"></i> {{ order.created_at|date:"d M, Y" }}</span>
+                    </div>
+
+                    <div class="order-body">
+                        <div class="info-block">
+                            <span class="info-label">সর্বমোট বিল</span>
+                            <span class="info-value" style="color: #22c55e;">৳ {{ order.total_price }}</span>
+                        </div>
+
+                        <div class="info-block">
+                            <span class="info-label">পেমেন্ট মেথড</span>
+                            <span class="info-value">{{ order.payment_method }}</span>
+                        </div>
+
+                        <div class="info-block">
+                            <span class="info-label">স্ট্যাটাস</span>
+                            <!-- Dynamic Status Colors -->
+                            {% if order.status == 'Pending' %}
+                                <span class="status-badge status-pending">পেন্ডিং</span>
+                            {% elif order.status == 'Processing' or order.status == 'Shipped' %}
+                                <span class="status-badge status-processing">{{ order.status }}</span>
+                            {% elif order.status == 'Delivered' %}
+                                <span class="status-badge status-delivered">ডেলিভার্ড</span>
+                            {% else %}
+                                <span class="status-badge status-cancelled">{{ order.status }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- === অর্ডারকৃত প্রোডাক্টের লিস্ট এবং রিভিউ বাটন === -->
+                    <div class="order-items-wrapper">
+                        <h4 style="font-size: 13px; color: #94a3b8; margin-bottom: 10px;">অর্ডারকৃত আইটেমসমূহ:</h4>
+
+                        {% for item in order.items.all %}
+                        <div class="ordered-item-row">
+                            <div class="item-basic-info">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" class="item-img" alt="Product">
+                                {% else %}
+                                    <div class="item-placeholder"><i class="fa-solid fa-box"></i></div>
+                                {% endif %}
+
+                                <div>
+                                    <div class="item-name">{{ item.product.name|truncatechars:40 }}</div>
+                                    <div class="item-meta">
+                                        পরিমাণ: {{ item.quantity }}
+                                        {% if item.size %} | সাইজ: {{ item.size }}{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ম্যাজিক লজিক: ডেলিভারড হলেই রিভিউ বাটন দেখাবে -->
+                            {% if order.status == 'Delivered' %}
+                                <a href="{% url 'product_detail' item.product.slug %}" class="btn-review">
+                                    <i class="fa-solid fa-star"></i> রিভিউ দিন
+                                </a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <!-- ============================================= -->
+
+                    <!-- === ইনভয়েস এবং ট্র্যাকিং বাটন (নতুন ডিজাইন) === -->
+                    <div class="order-footer" style="display: flex; justify-content: flex-end; gap: 15px;">
+
+                        <a href="{% url 'track_order' %}" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); padding: 8px 15px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-location-crosshairs"></i> অর্ডার ট্র্যাক করুন
+                        </a>
+
+                        <a href="{% url 'generate_invoice' order.id %}" target="_blank" class="btn-invoice">
+                            <i class="fa-solid fa-file-pdf"></i> ইনভয়েস ডাউনলোড
+                        </a>
+                    </div>
+                    <!-- ============================================= -->
+
+                </div>
+
+                {% empty %}
+                <!-- যদি কোনো অর্ডার না থাকে -->
+                <div class="empty-state">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <h3>আপনি এখনও কোনো অর্ডার করেননি!</h3>
+                    <p>আপনার পছন্দের প্রোডাক্ট অর্ডার করতে এখনই শপিং শুরু করুন।</p>
+                    <a href="{% url 'product_list' %}" class="btn-shop">শপিং করুন</a>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

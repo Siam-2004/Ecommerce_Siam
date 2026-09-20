@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice #{{ order.id }}</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 1.5cm;
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 13px;
+            color: #333333;
+            line-height: 1.5;
+        }
+        /* Top colored bar */
+        .top-bar {
+            background-color: #22c55e;
+            height: 8px;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+        /* Header Section */
+        .header-table {
+            width: 100%;
+            margin-bottom: 35px;
+        }
+        .header-table td {
+            vertical-align: middle;
+        }
+        .brand-name {
+            font-size: 32px;
+            font-weight: bold;
+            color: #0f172a;
+            margin: 0;
+        }
+        .brand-slogan {
+            color: #22c55e;
+            font-size: 12px;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+        .invoice-title {
+            font-size: 38px;
+            color: #cbd5e1;
+            text-align: right;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        /* Info Section */
+        .info-table {
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        .info-table td {
+            vertical-align: top;
+        }
+        .bill-to-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 4px;
+            width: 80%;
+        }
+        .customer-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0f172a;
+            margin-top: 8px;
+        }
+        .info-text {
+            color: #475569;
+            margin-top: 5px;
+            line-height: 1.6;
+        }
+        /* Items Table */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        .items-table th {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .items-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+        /* Totals Table */
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .totals-table td {
+            padding: 8px 12px;
+            text-align: right;
+        }
+        .total-row td {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0f172a;
+            border-top: 2px solid #22c55e;
+            padding-top: 15px;
+        }
+        .total-amount {
+            color: #22c55e;
+        }
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Accent Bar -->
+    <div class="top-bar"></div>
+
+    <!-- Header / Logo Area -->
+    <table class="header-table">
+        <tr>
+            <td style="width: 50%;">
+                <h1 class="brand-name">PREMIUM STORE</h1>
+                <p class="brand-slogan">SMART SHOPPING, BEST DEALS!</p>
+            </td>
+            <td style="width: 50%; text-align: right;">
+                <div class="invoice-title">INVOICE</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Billing and Order Info -->
+    <table class="info-table">
+        <tr>
+            <td style="width: 50%;">
+                <div class="bill-to-title">Billed To</div>
+                <div class="customer-name">{{ order.full_name }}</div>
+                <div class="info-text">
+                    <strong>Email:</strong> {{ order.email|default:"N/A" }}<br>
+                    <strong>Phone:</strong> {{ order.phone|default:"N/A" }}<br>
+                    <strong>Address:</strong> {{ order.address|default:"N/A" }}
+                </div>
+            </td>
+            <td style="width: 50%; text-align: right;">
+                <div class="bill-to-title" style="margin-left: auto; width: 60%; text-align: right;">Order Details</div>
+                <div class="info-text">
+                    <strong>Invoice No:</strong> #INV-{{ order.id|stringformat:"05d" }}<br>
+                    <strong>Date:</strong> {{ order.created_at|date:"d M, Y" }}<br>
+                    <strong>Payment Method:</strong> {{ order.payment_method|title }}<br>
+                    <strong>Status:</strong> <span style="color: #22c55e; font-weight: bold;">{{ order.status|title }}</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Items List -->
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th style="width: 5%;">#</th>
+                <th style="width: 45%;">Item Description</th>
+                <th style="width: 20%; text-align: center;">Price</th>
+                <th style="width: 10%; text-align: center;">Qty</th>
+                <th style="width: 20%; text-align: right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <strong>{{ item.product.name }}</strong>
+                    {% if item.size %}
+                        <br><span style="font-size: 11px; color: #64748b;">Size: {{ item.size }}</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">Tk {{ item.price|floatformat:2 }}</td>
+                <td style="text-align: center;">{{ item.quantity }}</td>
+                <td style="text-align: right;">Tk {{ item.total_price|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+   <!-- Totals Calculation -->
+    <table class="totals-table">
+        <tr>
+            <td style="width: 60%;"></td>
+            <td style="width: 20%; color: #64748b;">Subtotal:</td>
+            <td style="width: 20%;">Tk {{ order.subtotal|floatformat:2 }}</td>
+        </tr>
+
+        {% if order.discount_amount > 0 %}
+        <tr>
+            <td style="width: 60%;"></td>
+            <td style="width: 20%; color: #ef4444;">Discount applied:</td>
+            <td style="width: 20%; color: #ef4444;">- Tk {{ order.discount_amount|floatformat:2 }}</td>
+        </tr>
+        {% endif %}
+
+        <tr>
+            <td style="width: 60%;"></td>
+            <td style="width: 20%; color: #64748b;">Shipping/Delivery:</td>
+            <td style="width: 20%;">+ Tk {{ order.shipping_charge|floatformat:2 }}</td>
+        </tr>
+
+        <tr class="total-row">
+            <td style="width: 60%;"></td>
+            <td style="width: 20%;">Grand Total:</td>
+            <td style="width: 20%;" class="total-amount">Tk {{ order.total_price|floatformat:2 }}</td>
+        </tr>
+    </table>
+    <!-- Footer -->
+    <div class="footer">
+        <strong style="color: #0f172a; font-size: 13px;">Thank you for your business!</strong><br>
+        If you have any questions regarding this invoice, please contact <strong>support@premiumstore.com</strong><br>
+        www.premiumstore.com
+    </div>
+
+</body>
+</html>

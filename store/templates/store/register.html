@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Register - Exclusive Portal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .auth-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+        }
+        .auth-card h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; text-align: center; }
+        .auth-card p.subtitle { color: #94a3b8; font-size: 14px; text-align: center; margin-bottom: 25px; }
+        .input-group { position: relative; margin-bottom: 18px; }
+        .input-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #64748b; }
+        .input-group input {
+            width: 100%;
+            padding: 13px 16px 13px 45px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .input-group input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
+        }
+        .switch-auth { text-align: center; margin-top: 25px; font-size: 14px; color: #94a3b8; }
+        .switch-auth a { color: #818cf8; text-decoration: none; font-weight: 600; }
+        .messages { list-style: none; margin-bottom: 20px; }
+        .messages li { background: rgba(239, 68, 68, 0.2); border-left: 4px solid #ef4444; padding: 10px; border-radius: 6px; font-size: 13px; color: #fca5a5; }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+    <h2>অ্যাকাউন্ট খুলুন</h2>
+    <p class="subtitle">প্রিমিয়াম শপিং অভিজ্ঞতা উপভোগ করুন</p>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" name="full_name" required placeholder="আপনার পূর্ণ নাম">
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" name="email" required placeholder="ইমেইল অ্যাড্রেস">
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" name="password" required placeholder="পাসওয়ার্ড">
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-shield-halved"></i>
+            <input type="password" name="confirm_password" required placeholder="পাসওয়ার্ড নিশ্চিত করুন">
+        </div>
+        <button type="submit" class="btn-submit">রেজিস্ট্রেশন সম্পূর্ণ করুন</button>
+    </form>
+
+    <div class="switch-auth">
+        ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="{% url 'login' %}">লগইন করুন</a>
+    </div>
+</div>
+
+</body>
+</html>

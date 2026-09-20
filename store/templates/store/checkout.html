@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout - Premium Store</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #090d16; color: #ffffff; min-height: 100vh; padding-bottom: 50px; overflow-x: hidden; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #22c55e; }
+
+        /* ========================================= */
+        /* ILYN STYLE PREMIUM NAVBAR (SIMPLIFIED) */
+        /* ========================================= */
+        .premium-navbar { display: flex; justify-content: space-between; align-items: center; height: 75px; padding: 0 50px; background: #000000; color: #ffffff; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; margin-bottom: 40px;}
+        .nav-left { display: flex; gap: 30px; align-items: center; flex: 1; height: 100%; }
+        .nav-item { height: 100%; display: flex; align-items: center; }
+        .nav-item > a { color: #cbd5e1; text-decoration: none; font-size: 14px; transition: 0.3s; font-weight: 500; display: flex; align-items: center; gap: 8px;}
+        .nav-item:hover > a { color: #22c55e; }
+
+        .nav-center { flex: 1; display: flex; justify-content: center; }
+        .nav-logo { font-size: 26px; font-weight: 700; color: #ffffff; text-decoration: none; letter-spacing: 4px; }
+
+        .nav-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; color: #94a3b8; font-size: 13px; font-weight: 500;}
+        .nav-right i { color: #22c55e; margin-right: 8px; font-size: 16px;}
+
+        /* ========================================= */
+        /* === ONE-PAGE PREMIUM CHECKOUT LAYOUT === */
+        /* ========================================= */
+        .checkout-wrapper { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; gap: 40px; align-items: flex-start; }
+
+        /* Left Side: Form Section */
+        .checkout-form-section { flex: 1.5; }
+
+        .form-block { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 30px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .form-block-title { font-size: 18px; color: #22c55e; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+
+        .input-row { display: flex; gap: 20px; margin-bottom: 20px; }
+        .input-group { flex: 1; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;}
+        .input-group.mb-0 { margin-bottom: 0; }
+
+        .input-group label { font-size: 13px; color: #cbd5e1; font-weight: 500; }
+        .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 14px 18px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus { border-color: #22c55e; background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 15px rgba(34, 197, 94, 0.1); }
+        .input-group textarea { resize: vertical; min-height: 80px; }
+
+        /* Payment Options */
+        .payment-options { display: flex; flex-direction: column; gap: 15px; }
+        .payment-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 18px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.02); }
+        .payment-card:hover { border-color: #22c55e; }
+        .payment-card input[type="radio"] { width: 20px; height: 20px; accent-color: #22c55e; cursor: pointer; }
+        .payment-card .pay-content { flex: 1; display: flex; align-items: center; justify-content: space-between; }
+        .payment-card h4 { font-size: 16px; font-weight: 500; color: #e2e8f0; margin: 0;}
+        .payment-card i { font-size: 24px; transition: 0.3s; }
+
+        .payment-card.active { border-color: #22c55e; background: rgba(34, 197, 94, 0.05); }
+
+        .trx-details { display: none; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2); margin-top: 15px; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Right Side: Sticky Summary Section */
+        .order-summary-section { flex: 1; position: sticky; top: 100px; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .summary-title { font-size: 20px; color: #f8fafc; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 15px;}
+
+        .cart-items-list { display: flex; flex-direction: column; gap: 15px; max-height: 250px; overflow-y: auto; padding-right: 5px; margin-bottom: 25px; scrollbar-width: thin; scrollbar-color: #22c55e rgba(255,255,255,0.05); }
+        .summary-item { display: flex; gap: 15px; align-items: center; }
+
+        /* === FIXED: IMAGE CSS === */
+        .summary-img { min-width: 65px; width: 65px; height: 65px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); position: relative; background: rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center;}
+        .summary-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+        /* ======================== */
+
+        .summary-item-qty { position: absolute; top: -8px; right: -8px; background: #22c55e; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 11px; font-weight: bold; z-index: 2;}
+        .summary-info { flex: 1; }
+        .summary-info h4 { font-size: 14px; color: #cbd5e1; margin-bottom: 4px; }
+        .summary-info .size-badge { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); color: #22c55e; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; display: inline-block;}
+        .summary-price { font-weight: bold; color: #f8fafc; font-size: 15px; white-space: nowrap; }
+
+        /* Coupon Box */
+        .coupon-wrapper { display: flex; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+        .coupon-input { flex: 1; padding: 12px 15px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #fff; outline: none; transition: 0.3s; font-size: 13px; text-transform: uppercase; }
+        .coupon-input:focus { border-color: #22c55e; }
+        .btn-coupon { background: #22c55e; color: #fff; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-coupon:hover { background: #16a34a; }
+        .applied-coupon { display: flex; justify-content: space-between; align-items: center; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); padding: 12px 15px; border-radius: 10px; margin-bottom: 20px; }
+
+        /* Calculation */
+        .calc-row { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 12px; color: #cbd5e1; }
+        .calc-total { display: flex; justify-content: space-between; font-size: 20px; font-weight: bold; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); color: #fff; }
+
+        /* ==================================================== */
+        /* === ORIGINAL MAGIC TRUCK ANIMATION BUTTON === */
+        /* ==================================================== */
+        .order-btn-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 25px; }
+        .order-btn { position: relative; width: 100%; height: 55px; background: #22c55e; border: none; border-radius: 12px; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2); }
+        .order-btn:hover { background: #16a34a; box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4); transform: translateY(-2px); }
+        .order-btn:active { transform: scale(0.97); }
+
+        .btn-text { color: #ffffff; font-size: 16px; font-weight: bold; z-index: 10; transition: opacity 0.3s ease; display: flex; align-items: center; gap: 10px; }
+
+        .road-line { position: absolute; width: 200%; height: 3px; background: repeating-linear-gradient(90deg, transparent, transparent 15px, #ffffff 15px, #ffffff 30px); top: 50%; left: 0; transform: translateY(-50%); opacity: 0; z-index: 1; }
+
+        .truck { position: absolute; left: -120px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; z-index: 5; opacity: 0; }
+        .truck-trailer { width: 40px; height: 26px; background: #ffffff; border-radius: 4px; box-shadow: inset -2px 0 5px rgba(0,0,0,0.2); }
+        .truck-cab { width: 20px; height: 22px; background: #0f172a; border-radius: 2px 8px 8px 2px; margin-left: 2px; position: relative; }
+        .truck-cab::before, .truck-cab::after { content: ''; position: absolute; right: -5px; width: 6px; height: 5px; background: #ffeb3b; border-radius: 50%; box-shadow: 15px 0 15px 5px rgba(255, 235, 59, 0.8); }
+        .truck-cab::before { top: 2px; } .truck-cab::after { bottom: 2px; }
+
+        .order-btn.animate .btn-text { opacity: 0; }
+        .order-btn.animate .road-line { opacity: 1; animation: moveRoad 0.3s linear infinite; }
+        .order-btn.animate .truck { opacity: 1; animation: driveTruck 1.2s cubic-bezier(0.4, 0.0, 0.2, 1) forwards; }
+
+        @keyframes moveRoad { 0% { transform: translate(0, -50%); } 100% { transform: translate(-30px, -50%); } }
+        @keyframes driveTruck { 0% { left: -120px; } 40% { left: 30%; } 60% { left: 40%; } 100% { left: 120%; } }
+
+        .trust-badges { text-align: center; margin-top: 15px; color: #94a3b8; font-size: 13px; display: flex; justify-content: center; gap: 20px; }
+        .trust-badges span { display: flex; align-items: center; gap: 5px; }
+        /* ==================================================== */
+
+        /* Alerts & Empty States */
+        .alert-box { padding: 15px 20px; border-radius: 12px; font-size: 14px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .alert-success { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.4); color: #22c55e; }
+        .alert-error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; }
+
+        .empty-checkout-state { text-align: center; padding: 80px 20px; margin: 40px auto; max-width: 600px; background: rgba(15, 23, 42, 0.6); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .empty-checkout-state i { font-size: 80px; color: rgba(239, 68, 68, 0.5); margin-bottom: 20px; }
+        .empty-checkout-state h2 { font-size: 28px; color: #f8fafc; margin-bottom: 10px; }
+        .empty-checkout-state p { color: #94a3b8; margin-bottom: 30px; font-size: 16px; }
+        .empty-checkout-state a { background: #22c55e; color: #fff; text-decoration: none; padding: 15px 40px; border-radius: 12px; font-weight: bold; font-size: 16px; transition: 0.3s; display: inline-block; box-shadow: 0 5px 15px rgba(34,197,94,0.3); }
+        .empty-checkout-state a:hover { background: #16a34a; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(34,197,94,0.4); }
+
+        /* ORIGINAL bKash DUMMY GATEWAY MODAL STYLES (KEPT) */
+        .bkash-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); z-index: 9999; display: none; align-items: center; justify-content: center; }
+        .bkash-modal { width: 350px; background: #fff; border-radius: 8px; overflow: hidden; font-family: Arial, sans-serif; animation: popUp 0.3s ease; box-shadow: 0 20px 50px rgba(226, 19, 110, 0.3); }
+        @keyframes popUp { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .bkash-header { background: #e2136e; padding: 25px 20px; text-align: center; position: relative; }
+        .bkash-header h3 { color: white; margin-top: 10px; font-size: 18px; font-weight: normal; letter-spacing: 1px;}
+        .bkash-body { padding: 25px 20px; text-align: center; background: url('https://www.bkash.com/images/bg_pattern.png') #f8f8f8; }
+        .bkash-merchant-info { background: #fff; border-radius: 8px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .bkash-merchant-info p { color: #666; font-size: 13px; margin-bottom: 5px; }
+        .bkash-merchant-info h4 { color: #e2136e; font-size: 16px; margin-bottom: 10px; }
+        .bkash-invoice-amount { font-size: 24px; color: #333; font-weight: bold; }
+        .bkash-input-group { margin-bottom: 20px; text-align: left; }
+        .bkash-input-group label { display: block; font-size: 13px; color: #666; margin-bottom: 5px; text-align: center;}
+        .bkash-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; text-align: center; outline: none; transition: 0.3s; background: #fff; color: #333;}
+        .bkash-input:focus { border-color: #e2136e; box-shadow: 0 0 8px rgba(226, 19, 110, 0.2); }
+        .bkash-buttons { display: flex; gap: 10px; justify-content: space-between; }
+        .bkash-btn-close { flex: 1; background: #ccc; color: #333; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .bkash-btn-close:hover { background: #bbb; }
+        .bkash-btn-proceed { flex: 1; background: #e2136e; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .bkash-btn-proceed:hover { background: #c20f5c; }
+        .bkash-footer { background: #fff; padding: 15px; text-align: center; border-top: 1px solid #eee; font-size: 12px; color: #999; }
+        .bkash-footer i { color: #e2136e; }
+
+        @media (max-width: 900px) {
+            .checkout-wrapper { flex-direction: column; gap: 40px; }
+            .order-summary-section { width: 100%; position: static; order: -1; }
+            .checkout-form-section { width: 100%; }
+            .input-row { flex-direction: column; gap: 0; }
+            .payment-options { flex-direction: column; }
+            .premium-navbar { padding: 0 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================= -->
+    <!-- ILYN STYLE PREMIUM NAVBAR -->
+    <!-- ========================================= -->
+    <nav class="premium-navbar">
+        <div class="nav-left">
+            <div class="nav-item">
+                <a href="{% url 'cart_summary' %}"><i class="fa-solid fa-arrow-left"></i> Back to Cart</a>
+            </div>
+        </div>
+        <div class="nav-center">
+            <a href="{% url 'product_list' %}" class="nav-logo">ESTORE</a>
+        </div>
+        <div class="nav-right">
+            <i class="fa-solid fa-lock"></i> Secure Checkout
+        </div>
+    </nav>
+
+    {% if cart|length > 0 %}
+        <!-- মেসেজ অ্যালার্ট (সাকসেস/এরর) -->
+        {% if messages %}
+            <div style="max-width: 1200px; margin: 0 auto 20px auto; padding: 0 20px;">
+                {% for message in messages %}
+                    <div class="alert-box {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                        <i class="fa-solid {% if message.tags == 'success' %}fa-circle-check{% else %}fa-circle-exclamation{% endif %}"></i> {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="checkout-wrapper">
+
+            <!-- ================= LEFT COLUMN (MAIN FORM) ================= -->
+            <div class="checkout-form-section">
+                <!-- BACKEND FORM (IDs and Names preserved) -->
+                <form action="{% url 'checkout' %}" method="POST" id="checkoutForm">
+                    {% csrf_token %}
+
+                    <div class="form-block">
+                        <h3 class="form-block-title"><i class="fa-solid fa-map-location-dot"></i> ডেলিভারি ঠিকানা</h3>
+
+                        <div class="input-group">
+                            <label>পূর্ণ নাম</label>
+                            <input type="text" name="full_name" value="{{ request.user.first_name }}" required placeholder="আপনার নাম লিখুন">
+                        </div>
+
+                        <div class="row input-row">
+                            <div class="input-group mb-0">
+                                <label>ইমেইল অ্যাড্রেস</label>
+                                <input type="email" name="email" value="{{ request.user.email }}" required placeholder="email@example.com">
+                            </div>
+                            <div class="input-group mb-0">
+                                <label>ফোন নম্বর</label>
+                                <input type="tel" name="phone" required placeholder="01XXXXXXXXX">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>বিস্তারিত ঠিকানা (বাসা, রাস্তা, এলাকা)</label>
+                            <textarea name="address" required placeholder="আপনার সম্পূর্ণ ডেলিভারি ঠিকানা লিখুন..."></textarea>
+                        </div>
+
+                        <div class="input-group mb-0">
+                            <label>ডেলিভারি এরিয়া</label>
+                            <select name="shipping_area" id="shippingArea" onchange="updateShipping()">
+                                <option value="60">ঢাকার ভেতরে (৳ ৬০)</option>
+                                <option value="120">ঢাকার বাইরে (৳ ১২০)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-block">
+                        <h3 class="form-block-title"><i class="fa-solid fa-credit-card"></i> পেমেন্ট মেথড</h3>
+
+                        <div class="payment-options">
+                            <label class="payment-card active" id="card-cod" onclick="selectPayment('Cash on Delivery')">
+                                <input type="radio" name="payment_method" value="Cash on Delivery" checked>
+                                <div class="pay-content">
+                                    <h4>ক্যাশ অন ডেলিভারি</h4>
+                                    <i class="fa-solid fa-hand-holding-dollar" style="color: #22c55e;"></i>
+                                </div>
+                            </label>
+
+                            <label class="payment-card" id="card-bkash" onclick="selectPayment('bKash')">
+                                <input type="radio" name="payment_method" value="bKash">
+                                <div class="pay-content">
+                                    <h4 style="color: #e2136e;">বিকাশ পেমেন্ট</h4>
+                                    <i class="fa-solid fa-mobile-screen-button" style="color: #e2136e;"></i>
+                                </div>
+                            </label>
+
+                            <label class="payment-card" id="card-nagad" onclick="selectPayment('Nagad')">
+                                <input type="radio" name="payment_method" value="Nagad">
+                                <div class="pay-content">
+                                    <h4 style="color: #ff9800;">নগদ পেমেন্ট</h4>
+                                    <i class="fa-solid fa-mobile-button" style="color: #ff9800;"></i>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="trx-details" id="trxDetails">
+                            <p style="color: #facc15; font-size: 13px; margin-bottom: 15px;">
+                                <i class="fa-solid fa-circle-info"></i> অনুগ্রহ করে <strong>01XXXXXXXXX</strong> নম্বরে সেন্ড মানি করুন এবং নিচের তথ্যগুলো পূরণ করুন।
+                            </p>
+                            <div class="row input-row">
+                                <div class="input-group mb-0">
+                                    <label>যে নম্বর থেকে টাকা পাঠিয়েছেন</label>
+                                    <input type="text" name="sender_number" id="senderNumber" placeholder="01XXXXXXXXX">
+                                </div>
+                                <div class="input-group mb-0">
+                                    <label>ট্রানজেকশন আইডি (TrxID)</label>
+                                    <input type="text" name="trx_id" id="trxId" placeholder="AX89B2...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ================= RIGHT COLUMN (SUMMARY & COUPON) ================= -->
+            <div class="order-summary-section">
+                <h2 class="summary-title"><i class="fa-solid fa-receipt"></i> অর্ডার সামারি</h2>
+
+                <div class="cart-items-list">
+                    {% for item in cart %}
+                    <div class="summary-item">
+                        <div class="summary-img">
+                            {% if item.product.image %}<img src="{{ item.product.image.url }}" alt="">{% endif %}
+                            <span class="summary-item-qty">{{ item.quantity }}</span>
+                        </div>
+                        <div class="summary-info">
+                            <h4>{{ item.product.name|truncatechars:25 }}</h4>
+                            {% if item.size %}
+                                <span class="size-badge">সাইজ: {{ item.size }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="summary-price">৳ {{ item.price }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- === COUPON FORM SECTION === -->
+                {% if request.session.bundle_discount_amount %}
+                    <div class="applied-coupon">
+                        <span style="color: #f59e0b; font-weight: bold; font-size: 14px;">
+                            <i class="fa-solid fa-gift"></i> বান্ডেল অফার অ্যাপ্লাইড!
+                        </span>
+                    </div>
+                {% else %}
+                    {% if coupon_code %}
+                        <div class="applied-coupon">
+                            <span style="color: #22c55e; font-weight: bold; font-size: 14px;">
+                                <i class="fa-solid fa-tag"></i> {{ coupon_code }} অ্যাপ্লাইড! ({{ discount_percentage }}% ছাড়)
+                            </span>
+                        </div>
+                    {% else %}
+                        <form action="{% url 'apply_coupon' %}" method="POST" class="coupon-wrapper">
+                            {% csrf_token %}
+                            <input type="text" name="coupon_code" class="coupon-input" placeholder="কুপন কোড (যদি থাকে)" required autocomplete="off">
+                            <button type="submit" class="btn-coupon">Apply</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+                <!-- ============================ -->
+
+                <!-- === CALCULATION SECTION === -->
+                <div class="calc-row">
+                    <span>সাবটোটাল</span>
+                    <span>৳ <span id="subtotal">{{ cart.get_total_price }}</span></span>
+                </div>
+
+                {% if discount_amount and discount_amount > 0 %}
+                <div class="calc-row" style="color: #22c55e;">
+                    <span>
+                        {% if request.session.bundle_discount_amount %}
+                            বান্ডেল ডিসকাউন্ট
+                        {% else %}
+                            কুপন ডিসকাউন্ট ({{ discount_percentage }}%)
+                        {% endif %}
+                    </span>
+                    <span>- ৳ <span id="discountAmount">{{ discount_amount }}</span></span>
+                </div>
+                {% else %}
+                    <span id="discountAmount" style="display: none;">0</span>
+                {% endif %}
+
+                <div class="calc-row">
+                    <span>ডেলিভারি চার্জ</span>
+                    <span>৳ <span id="shippingChargeDisplay">{% if shipping_charge == 0 %}<span style="color:#22c55e; font-weight:bold;">FREE</span>{% else %}{{ shipping_charge|floatformat:0 }}{% endif %}</span></span>
+                </div>
+
+                <div class="calc-total">
+                    <span>সর্বমোট</span>
+                    <span style="color: #22c55e;">৳ <span id="grandTotal">{{ grand_total|floatformat:2 }}</span></span>
+                </div>
+                <!-- ============================ -->
+
+                <!-- ORDER BUTTON (Original Logic Kept) -->
+                <div class="order-btn-container">
+                    <button type="button" class="order-btn" id="magicOrderBtn" form="checkoutForm">
+                        <span class="btn-text" id="btnText"><i class="fa-solid fa-bag-shopping"></i> অর্ডার কনফার্ম করুন</span>
+                        <div class="road-line"></div>
+
+                        <!-- THE ORIGINAL TRUCK IS BACK! -->
+                        <div class="truck">
+                            <div class="truck-trailer"></div>
+                            <div class="truck-cab"></div>
+                        </div>
+                    </button>
+
+                    <div class="trust-badges">
+                        <span><i class="fa-solid fa-lock" style="color: #22c55e;"></i> SSL Secured</span>
+                        <span><i class="fa-solid fa-shield-halved" style="color: #22c55e;"></i> 100% Safe</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    {% else %}
+        <div class="empty-checkout-state">
+            <i class="fa-solid fa-cart-circle-xmark"></i>
+            <h2>আপনার কার্টে কোনো প্রোডাক্ট নেই!</h2>
+            <p>অর্ডার কনফার্ম করার জন্য অনুগ্রহ করে আগে কিছু প্রোডাক্ট কার্টে যুক্ত করুন।</p>
+            <a href="{% url 'product_list' %}">
+                <i class="fa-solid fa-bag-shopping" style="margin-right: 8px;"></i> শপিং পেজে ফিরে যান
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- ==================================================== -->
+    <!-- === bKash DUMMY GATEWAY MODAL (Original Logic) === -->
+    <!-- ==================================================== -->
+    <div class="bkash-overlay" id="bkashOverlay">
+        <div class="bkash-modal">
+            <div class="bkash-header">
+                <h3><i class="fa-solid fa-paper-plane"></i> bKash Payment</h3>
+            </div>
+
+            <div class="bkash-body" id="bkashStep1">
+                <div class="bkash-merchant-info">
+                    <p>Merchant</p>
+                    <h4>Premium E-Store</h4>
+                    <p>Invoice Amount</p>
+                    <div class="bkash-invoice-amount">৳ <span id="bkashAmountDisplay">{{ grand_total|floatformat:2 }}</span></div>
+                </div>
+
+                <div class="bkash-input-group">
+                    <label>Your bKash Account Number</label>
+                    <input type="number" id="bkashPhone" class="bkash-input" placeholder="e.g 01XXXXXXXXX" value="01711223344">
+                </div>
+
+                <div class="bkash-buttons">
+                    <button class="bkash-btn-close" onclick="closeBkash()">CLOSE</button>
+                    <button class="bkash-btn-proceed" onclick="goBkashStep2()">PROCEED</button>
+                </div>
+            </div>
+
+            <!-- bKash OTP Step -->
+            <div class="bkash-body" id="bkashStep2" style="display: none;">
+                <div class="bkash-merchant-info">
+                    <p>A verification code has been sent to your number.</p>
+                </div>
+                <div class="bkash-input-group">
+                    <label>bKash Verification Code</label>
+                    <input type="number" id="bkashOtp" class="bkash-input" placeholder="Enter OTP (e.g 123456)">
+                </div>
+                <div class="bkash-buttons">
+                    <button class="bkash-btn-close" onclick="closeBkash()">CLOSE</button>
+                    <button class="bkash-btn-proceed" onclick="goBkashStep3()">PROCEED</button>
+                </div>
+            </div>
+
+            <!-- bKash PIN Step -->
+            <div class="bkash-body" id="bkashStep3" style="display: none;">
+                <div class="bkash-merchant-info">
+                    <p>Invoice Amount: ৳ <span id="bkashAmountConfirm">{{ grand_total|floatformat:2 }}</span></p>
+                </div>
+                <div class="bkash-input-group">
+                    <label>Enter bKash PIN</label>
+                    <input type="password" id="bkashPin" class="bkash-input" placeholder="Enter PIN">
+                </div>
+                <div class="bkash-buttons">
+                    <button class="bkash-btn-close" onclick="closeBkash()">CLOSE</button>
+                    <button class="bkash-btn-proceed" onclick="confirmBkashPayment()">CONFIRM</button>
+                </div>
+            </div>
+
+            <div class="bkash-footer">
+                <i class="fa-solid fa-phone"></i> 16247
+            </div>
+        </div>
+    </div>
+    <!-- ==================================================== -->
+
+    <!-- Original JavaScript Logic Kept Untouched -->
+    <script>
+        function selectPayment(method) {
+            const codCard = document.getElementById('card-cod');
+            if(codCard) {
+                codCard.classList.remove('active');
+                document.getElementById('card-bkash').classList.remove('active');
+                document.getElementById('card-nagad').classList.remove('active');
+
+                const trxDetails = document.getElementById('trxDetails');
+                const senderInput = document.getElementById('senderNumber');
+                const trxInput = document.getElementById('trxId');
+
+                if (method === 'Cash on Delivery') {
+                    document.getElementById('card-cod').classList.add('active');
+                    trxDetails.style.display = 'none';
+                    senderInput.removeAttribute('required');
+                    trxInput.removeAttribute('required');
+                } else if (method === 'bKash') {
+                    document.getElementById('card-bkash').classList.add('active');
+                    trxDetails.style.display = 'none';
+                    senderInput.removeAttribute('required');
+                    trxInput.removeAttribute('required');
+                } else if (method === 'Nagad') {
+                    document.getElementById('card-nagad').classList.add('active');
+                    trxDetails.style.display = 'block';
+                    senderInput.setAttribute('required', 'true');
+                    trxInput.setAttribute('required', 'true');
+                }
+            }
+        }
+
+        function updateShipping() {
+            const subtotalElement = document.getElementById('subtotal');
+            if(!subtotalElement) return;
+
+            const subtotalStr = subtotalElement.innerText.replace(/[^0-9.]/g, '');
+            const subtotal = parseFloat(subtotalStr) || 0;
+
+            const discountElement = document.getElementById('discountAmount');
+            const discountStr = discountElement ? discountElement.innerText.replace(/[^0-9.]/g, '') : '0';
+            const discount = parseFloat(discountStr) || 0;
+
+            // চেক করছি অফার অন নাকি অফ
+            const isOfferActive = "{{ is_free_shipping_active|yesno:'true,false' }}" === "true";
+            const freeShippingThreshold = parseFloat("{{ free_shipping_threshold|default:'3000' }}") || 3000;
+
+            const shippingSelect = document.getElementById('shippingArea');
+            let shippingCost = shippingSelect ? (parseFloat(shippingSelect.value) || 60) : 60;
+
+            const finalSubtotal = Math.max(0, subtotal - discount);
+            const shippingDisplay = document.getElementById('shippingChargeDisplay');
+
+            // অফার অন থাকলে এবং টার্গেট ফিলাপ হলে ফ্রি!
+            if (isOfferActive && finalSubtotal >= freeShippingThreshold) {
+                shippingCost = 0;
+                if(shippingDisplay) shippingDisplay.innerHTML = '<span style="color:#22c55e; font-weight:bold;">FREE</span>';
+            } else {
+                if(shippingDisplay) shippingDisplay.innerText = shippingCost;
+            }
+
+            const grandTotal = finalSubtotal + shippingCost;
+            const grandTotalElement = document.getElementById('grandTotal');
+            if(grandTotalElement) grandTotalElement.innerText = grandTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+            const bkashAmt = document.getElementById('bkashAmountDisplay');
+            const bkashConf = document.getElementById('bkashAmountConfirm');
+            if(bkashAmt) bkashAmt.innerText = grandTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            if(bkashConf) bkashConf.innerText = grandTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        function closeBkash() {
+            bkashOverlay.style.display = 'none';
+            document.getElementById('bkashStep1').style.display = 'block';
+            document.getElementById('bkashStep2').style.display = 'none';
+            document.getElementById('bkashStep3').style.display = 'none';
+        }
+
+        function goBkashStep2() {
+            if(document.getElementById('bkashPhone').value.length > 10) {
+                document.getElementById('bkashStep1').style.display = 'none';
+                document.getElementById('bkashStep2').style.display = 'block';
+                setTimeout(() => { document.getElementById('bkashOtp').value = "543216"; }, 1000);
+            } else {
+                alert("Please enter a valid bKash number!");
+            }
+        }
+
+        function goBkashStep3() {
+            if(document.getElementById('bkashOtp').value.length >= 4) {
+                document.getElementById('bkashStep2').style.display = 'none';
+                document.getElementById('bkashStep3').style.display = 'block';
+            } else {
+                alert("Please enter OTP!");
+            }
+        }
+
+        function confirmBkashPayment() {
+            if(document.getElementById('bkashPin').value.length >= 4) {
+                closeBkash();
+
+                document.getElementById('senderNumber').value = document.getElementById('bkashPhone').value;
+                document.getElementById('trxId').value = "BKASH" + Math.floor(Math.random() * 1000000000);
+
+                const magicBtn = document.getElementById('magicOrderBtn');
+                magicBtn.scrollIntoView({behavior: 'smooth', block: 'center'});
+
+                setTimeout(() => {
+                    executeOrderSubmission();
+                }, 500);
+
+            } else {
+                alert("Please enter a valid PIN!");
+            }
+        }
+
+        const magicBtn = document.getElementById('magicOrderBtn');
+        if(magicBtn) {
+            magicBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = document.getElementById('checkoutForm');
+                const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+
+                if (form.checkValidity()) {
+                    if (paymentMethod === 'bKash') {
+                        bkashOverlay.style.display = 'flex';
+                    } else {
+                        executeOrderSubmission();
+                    }
+                } else {
+                    form.reportValidity();
+                }
+            });
+        }
+
+        function executeOrderSubmission() {
+            const button = document.getElementById('magicOrderBtn');
+            const form = document.getElementById('checkoutForm');
+
+            if (!button.classList.contains('animate')) {
+                button.classList.add('animate');
+
+                setTimeout(() => {
+                    button.classList.remove('animate');
+
+                    const btnText = document.getElementById('btnText');
+                    if(btnText) {
+                        btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> প্রসেস হচ্ছে... দয়া করে অপেক্ষা করুন';
+                        btnText.style.opacity = '1';
+                    }
+
+                    form.submit();
+                }, 1200);
+            }
+        }
+
+        // Initial Calculation on Page Load
+        document.addEventListener("DOMContentLoaded", function() {
+            updateShipping();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order - Premium Store</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #090d16; color: #ffffff; min-height: 100vh; padding-bottom: 50px; }
+
+        /* Navbar */
+        .navbar { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 40px; }
+        .logo { font-size: 24px; font-weight: 700; color: #22c55e; text-decoration: none; }
+        .back-link { color: #cbd5e1; text-decoration: none; transition: 0.3s; font-size: 15px; }
+        .back-link:hover { color: #22c55e; }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+        /* Glass Panel */
+        .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); margin-bottom: 30px; }
+
+        .page-title { text-align: center; font-size: 24px; color: #f8fafc; margin-bottom: 30px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .page-title i { font-size: 40px; color: #3b82f6; }
+
+        /* Form Styles */
+        .track-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end; margin-bottom: 20px; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-group label { font-size: 13px; color: #94a3b8; font-weight: 500; }
+        .input-group input { width: 100%; padding: 14px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); background: rgba(255,255,255,0.08); }
+        .btn-track { padding: 14px 30px; background: #3b82f6; color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; height: 50px; }
+        .btn-track:hover { background: #2563eb; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4); transform: translateY(-2px); }
+
+        .alert-error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 20px; font-size: 14px; }
+
+        /* ================= TIMELINE TRACKER CSS ================= */
+        .tracking-result { border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 30px; margin-top: 10px; }
+        .order-info-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; background: rgba(255,255,255,0.02); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .order-info-header h3 { color: #22c55e; font-size: 18px; }
+        .order-info-header p { color: #cbd5e1; font-size: 14px; }
+
+        .stepper-wrapper { display: flex; justify-content: space-between; position: relative; margin-bottom: 50px; padding: 0 20px; }
+        .stepper-wrapper::before { content: ''; position: absolute; top: 22px; left: 40px; right: 40px; height: 6px; background: #1e293b; border-radius: 5px; z-index: 1; }
+        .progress-bar { position: absolute; top: 22px; left: 40px; height: 6px; background: linear-gradient(90deg, #10b981, #22c55e); z-index: 2; transition: width 1s ease; border-radius: 5px; box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
+
+        .step { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 12px; width: 25%; }
+        .step-icon { width: 50px; height: 50px; background: #0f172a; border: 3px solid #334155; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #64748b; font-size: 20px; transition: all 0.5s ease; position: relative; }
+        .step-label { font-size: 14px; font-weight: 600; color: #64748b; text-align: center; transition: 0.3s; }
+
+        .step.active .step-icon { background: #0f172a; border-color: #3b82f6; color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); transform: scale(1.1); }
+        .step.active .step-label { color: #3b82f6; text-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+
+        .step.completed .step-icon { background: #22c55e; border-color: #22c55e; color: #fff; box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
+        .step.completed .step-label { color: #22c55e; }
+        .step.completed .step-icon::before { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; }
+        .step.completed .step-icon i { opacity: 0; }
+
+        .cancelled-banner { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 20px; border-radius: 12px; text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 30px; }
+
+        /* === NEW: MEGA REVIEW BOX CSS === */
+        .mega-review-box { background: rgba(34, 197, 94, 0.05); border: 1px dashed rgba(34, 197, 94, 0.4); border-radius: 15px; padding: 30px 20px; text-align: center; margin-bottom: 30px; animation: popUp 0.5s ease; }
+        @keyframes popUp { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .mega-review-box h3 { color: #22c55e; margin-bottom: 10px; font-size: 20px; }
+        .mega-review-box p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+
+        .btn-review-mega { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(45deg, #10b981, #22c55e); color: #fff; padding: 12px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 15px; transition: 0.3s; box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3); margin: 5px; }
+        .btn-review-mega:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(34, 197, 94, 0.5); }
+        /* ================================== */
+
+        /* Items List & Small Review Button */
+        .items-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; }
+        .items-card h4 { color: #f8fafc; margin-bottom: 15px; font-size: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.05); flex-wrap: wrap; gap: 10px; }
+        .item-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+        .item-name { color: #cbd5e1; font-size: 15px; flex: 1; min-width: 200px; display: flex; align-items: center; gap: 15px;}
+        .item-price-wrapper { display: flex; align-items: center; gap: 20px; }
+        .item-price { color: #f8fafc; font-weight: bold; font-size: 15px; }
+
+        .btn-review-small { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); padding: 8px 15px; border-radius: 8px; font-size: 13px; font-weight: bold; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
+        .btn-review-small:hover { background: #3b82f6; color: #fff; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); transform: translateY(-2px); }
+
+        @media (max-width: 600px) {
+            .track-form { grid-template-columns: 1fr; }
+            .btn-track { width: 100%; justify-content: center; }
+            .stepper-wrapper { flex-direction: column; align-items: flex-start; gap: 40px; padding: 0; margin-left: 10px; }
+            .stepper-wrapper::before { width: 4px; height: calc(100% - 40px); left: 23px; top: 20px; }
+            .progress-bar { width: 4px !important; transition: height 1s ease; left: 23px; top: 20px; }
+            .progress-bar[style*="width: 0%"] { height: 0% !important; }
+            .progress-bar[style*="width: 33%"] { height: 33% !important; }
+            .progress-bar[style*="width: 66%"] { height: 66% !important; }
+            .progress-bar[style*="width: 100%"] { height: 100% !important; }
+            .step { flex-direction: row; width: 100%; gap: 20px; }
+
+            .item-price-wrapper { width: 100%; justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'product_list' %}" class="logo">E-Store<span style="color:white;">.</span></a>
+        <a href="{% url 'product_list' %}" class="back-link"><i class="fa-solid fa-house"></i> হোম পেজে যান</a>
+    </nav>
+
+    <div class="container">
+        <div class="glass-panel">
+
+            <div class="page-title">
+                <i class="fa-solid fa-truck-fast"></i>
+                <h2>অর্ডার ট্র্যাক করুন</h2>
+                <p style="font-size: 14px; color: #94a3b8; font-weight: normal;">আপনার অর্ডার আইডি এবং ফোন নম্বর দিয়ে বর্তমান অবস্থান জানুন</p>
+            </div>
+
+            <form method="POST" class="track-form">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label>অর্ডার আইডি</label>
+                    <input type="number" name="order_id" placeholder="যেমন: 1024" required>
+                </div>
+                <div class="input-group">
+                    <label>ফোন নম্বর</label>
+                    <input type="text" name="phone" placeholder="যেমন: 01XXXXXXXXX" required>
+                </div>
+                <button type="submit" class="btn-track"><i class="fa-solid fa-magnifying-glass"></i> খুঁজুন</button>
+            </form>
+
+            {% if error %}
+                <div class="alert-error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>
+            {% endif %}
+
+            {% if order %}
+            <div class="tracking-result">
+
+                <div class="order-info-header">
+                    <div>
+                        <h3>অর্ডার #{{ order.id }}</h3>
+                        <p><i class="fa-solid fa-user" style="margin-right: 5px;"></i> {{ order.full_name }}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <h3 style="color: #fff;">৳ {{ order.total_price }}</h3>
+                        <p>{{ order.payment_method }}</p>
+                    </div>
+                </div>
+
+                {% if order.status == 'Cancelled' %}
+                    <div class="cancelled-banner">
+                        <i class="fa-solid fa-ban" style="margin-right: 8px;"></i> আপনার অর্ডারটি বাতিল করা হয়েছে!
+                    </div>
+                {% else %}
+                    <div class="stepper-wrapper">
+                        {% if order.status == 'Pending' %} <div class="progress-bar" style="width: 0%;"></div>
+                        {% elif order.status == 'Processing' %} <div class="progress-bar" style="width: 33%;"></div>
+                        {% elif order.status == 'Shipped' %} <div class="progress-bar" style="width: 66%;"></div>
+                        {% elif order.status == 'Delivered' %} <div class="progress-bar" style="width: 100%;"></div>
+                        {% endif %}
+
+                        <div class="step {% if order.status == 'Pending' %}active{% else %}completed{% endif %}">
+                            <div class="step-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                            <div class="step-label">পেন্ডিং</div>
+                        </div>
+
+                        <div class="step {% if order.status == 'Processing' %}active{% elif order.status == 'Shipped' or order.status == 'Delivered' %}completed{% endif %}">
+                            <div class="step-icon"><i class="fa-solid fa-box-open"></i></div>
+                            <div class="step-label">প্রসেসিং</div>
+                        </div>
+
+                        <div class="step {% if order.status == 'Shipped' %}active{% elif order.status == 'Delivered' %}completed{% endif %}">
+                            <div class="step-icon"><i class="fa-solid fa-truck"></i></div>
+                            <div class="step-label">শিপড</div>
+                        </div>
+
+                        <div class="step {% if order.status == 'Delivered' %}completed{% endif %}">
+                            <div class="step-icon"><i class="fa-solid fa-house-circle-check"></i></div>
+                            <div class="step-label">ডেলিভার্ড</div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- === NEW: MEGA REVIEW BOX (Only shows if Delivered) === -->
+                {% if order.status == 'Delivered' %}
+                <div class="mega-review-box">
+                    <h3><i class="fa-solid fa-party-horn"></i> প্রোডাক্টটি সফলভাবে ডেলিভারি হয়েছে!</h3>
+                    <p>আপনার অভিজ্ঞতা আমাদের সাথে শেয়ার করুন এবং প্রোডাক্টটির রিভিউ দিন।</p>
+
+                    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+                        {% for item in order.items.all %}
+                            <a href="{% url 'product_detail' item.product.slug %}" class="btn-review-mega">
+                                <i class="fa-solid fa-star"></i> {{ item.product.name|truncatechars:20 }} - রিভিউ দিন
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                <!-- ======================================================= -->
+
+                <!-- Ordered Items Summary -->
+                <div class="items-card">
+                    <h4><i class="fa-solid fa-cart-shopping"></i> অর্ডারকৃত আইটেমসমূহ</h4>
+                    {% for item in order.items.all %}
+                        <div class="item-row">
+                            <div class="item-name">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">
+                                {% endif %}
+                                <span>{{ item.product.name|truncatechars:35 }} <span style="color: #64748b; margin-left: 5px;">(x{{ item.quantity }})</span></span>
+                            </div>
+
+                            <div class="item-price-wrapper">
+                                <div class="item-price">৳ {{ item.price }}</div>
+
+                                <!-- === Small Review Button (Only shows if Delivered) === -->
+                                {% if order.status == 'Delivered' %}
+                                    <!-- Anchor tag দিয়ে সরাসরি রিভিউ সেকশনে পাঠানো হবে -->
+                                    <a href="{% url 'product_detail' item.product.slug %}" class="btn-review-small">
+                                        <i class="fa-solid fa-camera"></i> রিভিউ দিন
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</body>
+</html>

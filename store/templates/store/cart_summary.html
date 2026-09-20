@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Store - Shopping Cart</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #090d16; color: #ffffff; min-height: 100vh; }
+
+        /* --- Navbar (Same as Home) --- */
+        .navbar { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .logo { font-size: 24px; font-weight: 700; color: #22c55e; text-decoration: none; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { color: #cbd5e1; text-decoration: none; font-size: 15px; font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: #22c55e; }
+        .nav-btn { background: #22c55e; color: #fff !important; padding: 8px 16px; border-radius: 8px; }
+
+        /* --- Cart Layout --- */
+        .cart-wrapper { max-width: 1200px; margin: 50px auto; padding: 0 20px; display: flex; gap: 30px; align-items: flex-start; }
+
+        /* Left Side: Cart Items */
+        .cart-items-section { flex: 2; }
+        .section-header { font-size: 24px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .section-header span { font-size: 14px; color: #94a3b8; font-weight: normal; background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 20px; }
+
+        .cart-item-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 20px; margin-bottom: 20px; display: flex; gap: 20px; align-items: center; transition: all 0.3s ease; }
+        .cart-item-card:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(34, 197, 94, 0.2); transform: translateX(5px); }
+
+        .item-img { width: 100px; height: 100px; border-radius: 12px; object-fit: cover; background: rgba(255,255,255,0.02); }
+        .item-details { flex: 1; }
+        .item-title { font-size: 18px; font-weight: 600; color: #f8fafc; margin-bottom: 5px; text-decoration: none; display: inline-block; transition: 0.3s; }
+        .item-title:hover { color: #22c55e; }
+        .item-meta { font-size: 13px; color: #94a3b8; margin-bottom: 10px; display: flex; gap: 15px; }
+        .item-meta span { background: rgba(255,255,255,0.05); padding: 3px 10px; border-radius: 6px; }
+        .item-meta span.size-badge { border: 1px solid rgba(34, 197, 94, 0.3); color: #22c55e; }
+
+        .item-price-controls { display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
+        .total-item-price { font-size: 18px; font-weight: bold; color: #22c55e; }
+
+        .qty-controls { display: flex; align-items: center; gap: 10px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1); padding: 5px; border-radius: 10px; }
+        .qty-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); color: #fff; text-decoration: none; border-radius: 8px; transition: 0.3s; font-weight: bold; }
+        .qty-btn:hover { background: #22c55e; }
+        .qty-input { width: 40px; text-align: center; background: none; border: none; color: #fff; font-weight: bold; font-size: 15px; }
+
+        .remove-btn { color: #ef4444; background: rgba(239, 68, 68, 0.1); border: 1px solid transparent; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
+        .remove-btn:hover { background: #ef4444; color: #fff; }
+
+        /* Right Side: Order Summary */
+        .summary-section { flex: 1; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 25px; position: sticky; top: 100px; }
+        .summary-title { font-size: 20px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: #cbd5e1; font-size: 15px; }
+        .summary-total { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); font-size: 20px; font-weight: bold; color: #fff; }
+        .summary-total span:last-child { color: #22c55e; }
+
+        .checkout-btn { width: 100%; display: block; text-align: center; background: #22c55e; color: #fff; text-decoration: none; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: bold; margin-top: 25px; transition: 0.3s; box-shadow: 0 5px 15px rgba(34,197,94,0.2); }
+        .checkout-btn:hover { background: #16a34a; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(34,197,94,0.4); }
+        .continue-btn { width: 100%; display: block; text-align: center; background: transparent; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; padding: 12px; border-radius: 12px; font-size: 15px; margin-top: 15px; transition: 0.3s; }
+        .continue-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
+
+        /* Empty Cart State */
+        .empty-cart { text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.1); }
+        .empty-cart i { font-size: 60px; color: rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .empty-cart h2 { font-size: 24px; color: #f8fafc; margin-bottom: 10px; }
+        .empty-cart p { color: #94a3b8; margin-bottom: 25px; }
+        .empty-cart .shop-now-btn { display: inline-block; background: #22c55e; color: #fff; text-decoration: none; padding: 12px 30px; border-radius: 30px; font-weight: bold; transition: 0.3s; }
+        .empty-cart .shop-now-btn:hover { background: #16a34a; box-shadow: 0 5px 15px rgba(34,197,94,0.3); }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .cart-wrapper { flex-direction: column; }
+            .cart-items-section, .summary-section { width: 100%; }
+            .summary-section { position: static; }
+        }
+        @media (max-width: 600px) {
+            .cart-item-card { flex-direction: column; align-items: flex-start; }
+            .item-price-controls { width: 100%; flex-direction: row; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'product_list' %}" class="logo">E-Store<span style="color:white;">.</span></a>
+        <div class="nav-links">
+            <a href="{% url 'product_list' %}">হোম</a>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'wishlist' %}"><i class="fa-solid fa-heart" style="color:#ef4444;"></i> উইশলিস্ট</a>
+                <a href="{% url 'profile' %}" class="nav-btn"><i class="fa-solid fa-user"></i> প্রোফাইল</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-btn">লগইন</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="cart-wrapper">
+        <div class="cart-items-section">
+            <div class="section-header">
+                <h2>শপিং কার্ট</h2>
+                <span>{{ cart|length }} টি আইটেম</span>
+            </div>
+
+            {% for item in cart %}
+            <div class="cart-item-card">
+                {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="item-img">
+                {% else %}
+                    <div class="item-img" style="display:flex; align-items:center; justify-content:center; font-size: 30px; color: rgba(255,255,255,0.1);"><i class="fa-solid fa-image"></i></div>
+                {% endif %}
+
+                <div class="item-details">
+                    <a href="{% url 'product_detail' item.product.slug %}" class="item-title">{{ item.product.name }}</a>
+                    <div class="item-meta">
+                        <span>মূল্য: ৳ {{ item.price }}</span>
+                        <!-- আমরা যে ডাইনামিক সাইজ বানিয়েছি সেটা এখানে শো করবে -->
+                        {% if item.size %}
+                            <span class="size-badge">সাইজ: {{ item.size }}</span>
+                        {% endif %}
+                    </div>
+
+                    <a href="{% url 'cart_remove' item.product.id %}?size={{ item.size }}" class="remove-btn">
+                        <i class="fa-solid fa-trash-can"></i> মুছে ফেলুন
+                    </a>
+                </div>
+
+                <div class="item-price-controls">
+                    <div class="total-item-price">৳ {{ item.total_price }}</div>
+                    <div class="qty-controls">
+                        <a href="{% url 'cart_decrement' item.product.id %}?size={{ item.size }}" class="qty-btn"><i class="fa-solid fa-minus"></i></a>
+                        <input type="text" class="qty-input" value="{{ item.quantity }}" readonly>
+                        <a href="{% url 'cart_add' item.product.id %}?size={{ item.size }}" class="qty-btn"><i class="fa-solid fa-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-cart">
+                <i class="fa-solid fa-cart-arrow-down"></i>
+                <h2>আপনার কার্ট সম্পূর্ণ খালি!</h2>
+                <p>মনে হচ্ছে আপনি এখনো কোনো প্রোডাক্ট কার্টে যুক্ত করেননি।</p>
+                <a href="{% url 'product_list' %}" class="shop-now-btn">শপিং শুরু করুন</a>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if cart|length > 0 %}
+        <div class="summary-section">
+            <h3 class="summary-title">অর্ডার সামারি</h3>
+
+            <div class="summary-row">
+                <span>সাবটোটাল ({{ cart|length }} আইটেম)</span>
+                <span>৳ {{ cart.get_total_price }}</span>
+            </div>
+            <div class="summary-row">
+                <span>ডেলিভারি চার্জ</span>
+                <span style="color: #94a3b8; font-size: 13px;">(চেকআউট পেজে হিসাব করা হবে)</span>
+            </div>
+
+            <div class="summary-total">
+                <span>সর্বমোট</span>
+                <span>৳ {{ cart.get_total_price }}</span>
+            </div>
+
+            <a href="{% url 'checkout' %}" class="checkout-btn">চেকআউট করতে এগিয়ে যান <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
+            <a href="{% url 'product_list' %}" class="continue-btn"><i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i> আরো শপিং করুন</a>
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>

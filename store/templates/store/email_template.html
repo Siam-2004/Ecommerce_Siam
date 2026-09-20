@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="margin: 0; padding: 0; background-color: #090d16; font-family: Arial, sans-serif;">
+    <div style="background-color: #090d16; padding: 40px 20px; text-align: center;">
+
+        <!-- Main Email Box -->
+        <div style="max-width: 500px; margin: 0 auto; background-color: rgba(15, 23, 42, 0.9); padding: 40px 30px; border-radius: 16px; border: 1px solid #22c55e; box-shadow: 0 10px 25px rgba(34, 197, 94, 0.1);">
+
+            <!-- Logo / Header -->
+            <h1 style="color: #22c55e; margin-top: 0; font-size: 28px; font-weight: bold; margin-bottom: 25px;">E-Store<span style="color:white;">.</span></h1>
+
+            <h2 style="color: #f8fafc; font-size: 20px; margin-bottom: 10px;">আপনার অর্ডারের স্ট্যাটাস আপডেট!</h2>
+
+            <p style="color: #cbd5e1; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                হ্যালো <strong>{{ order.full_name }}</strong>,<br>
+                আপনার অর্ডারটির (Order ID: <strong style="color: #fff;">#{{ order.id }}</strong>) বর্তমান স্ট্যাটাস পরিবর্তন করা হয়েছে।
+            </p>
+
+            <!-- Status Box -->
+            <div style="background-color: rgba(34, 197, 94, 0.1); border: 1px dashed #22c55e; padding: 15px; border-radius: 10px; margin-bottom: 30px;">
+                <p style="margin: 0; color: #94a3b8; font-size: 14px;">বর্তমান স্ট্যাটাস:</p>
+                <h3 style="margin: 5px 0 0 0; color: #22c55e; font-size: 22px; text-transform: uppercase;">{{ order.status }}</h3>
+            </div>
+
+            <p style="color: #94a3b8; font-size: 14px; margin-bottom: 25px;">বিস্তারিত দেখতে এবং আপনার অর্ডার ট্র্যাক করতে নিচের বাটনে ক্লিক করুন:</p>
+
+            <!-- Call to Action Button -->
+            <a href="{{ domain }}/order-history/" style="display: inline-block; background-color: #22c55e; color: #ffffff; text-decoration: none; padding: 14px 30px; border-radius: 10px; font-weight: bold; font-size: 16px;">
+                অর্ডার হিস্ট্রি দেখুন
+            </a>
+
+            <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
+            <p style="color: #64748b; font-size: 12px; margin: 0;">আমাদের সাথে শপিং করার জন্য ধন্যবাদ!<br>Premium Store Team</p>
+
+        </div>
+    </div>
+</body>
+</html>

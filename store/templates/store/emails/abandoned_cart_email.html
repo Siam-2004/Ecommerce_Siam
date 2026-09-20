@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আপনার কার্টের পছন্দের পণ্যগুলো অপেক্ষা করছে!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0b1120;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #f8fafc;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 620px;
+            margin: 30px auto;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+        .header {
+            background: linear-gradient(135deg, #090d16 0%, #1e293b 100%);
+            padding: 35px 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .brand-title {
+            color: #22c55e;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 0 0 8px 0;
+        }
+        .header-sub {
+            color: #94a3b8;
+            font-size: 14px;
+            margin: 0;
+        }
+        .content {
+            padding: 35px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #f1f5f9;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .message-intro {
+            color: #cbd5e1;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        .product-card {
+            display: table;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+        .product-img-col {
+            display: table-cell;
+            width: 70px;
+            vertical-align: middle;
+        }
+        .product-img {
+            width: 65px;
+            height: 65px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .product-info-col {
+            display: table-cell;
+            vertical-align: middle;
+            padding-left: 15px;
+        }
+        .product-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0 0 5px 0;
+        }
+        .product-meta {
+            font-size: 13px;
+            color: #94a3b8;
+            margin: 0;
+        }
+        .product-price-col {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .product-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #22c55e;
+            margin: 0;
+        }
+        .total-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        .total-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin: 0;
+        }
+        .total-amount {
+            font-size: 20px;
+            font-weight: 800;
+            color: #22c55e;
+            margin: 0;
+        }
+        .coupon-card {
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(245, 158, 11, 0.05) 100%);
+            border: 1px dashed rgba(245, 158, 11, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        .coupon-title {
+            color: #fbbf24;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+        }
+        .coupon-badge {
+            display: inline-block;
+            background: #f59e0b;
+            color: #000;
+            font-size: 18px;
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+            padding: 8px 24px;
+            border-radius: 8px;
+            letter-spacing: 2px;
+            margin: 8px 0;
+        }
+        .coupon-hint {
+            color: #cbd5e1;
+            font-size: 13px;
+            margin: 5px 0 0 0;
+        }
+        .cta-container {
+            text-align: center;
+            margin: 35px 0 25px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #22c55e;
+            color: #ffffff !important;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 16px 36px;
+            text-decoration: none;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.35);
+            transition: all 0.3s ease;
+        }
+        .footer {
+            background: #090d16;
+            padding: 25px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .features {
+            display: table;
+            width: 100%;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+        }
+        .feature-item {
+            display: table-cell;
+            width: 33.33%;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1 class="brand-title">PREMIUM STORE</h1>
+            <p class="header-sub">আপনার প্রিয় শপিং ডেস্টিনেশন</p>
+        </div>
+
+        <!-- MAIN BODY -->
+        <div class="content">
+            <h2 class="greeting">প্রিয় {{ customer_name }},</h2>
+            <p class="message-intro">
+                আমরা লক্ষ্য করেছি আপনি কার্টে কিছু অসাধারণ প্রোডাক্ট পছন্দ করে রেখে গিয়েছিলেন, কিন্তু অর্ডারটি সম্পন্ন করা হয়নি। যেকোনো সময় স্টক শেষ হয়ে যেতে পারে, তাই পছন্দের পণ্যগুলো দ্রুত সংগ্রহ করে নিন!
+            </p>
+
+            <!-- PRODUCTS TABLE -->
+            <div class="products-list">
+                {% for item in items %}
+                <div class="product-card">
+                    <div class="product-img-col">
+                        {% if item.image_url %}
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="product-img">
+                        {% endif %}
+                    </div>
+                    <div class="product-info-col">
+                        <p class="product-name">{{ item.name }}</p>
+                        <p class="product-meta">
+                            {% if item.size %}সাইজ: <strong>{{ item.size }}</strong> | {% endif %}
+                            পরিমাণ: <strong>{{ item.quantity }} টি</strong>
+                        </p>
+                    </div>
+                    <div class="product-price-col">
+                        <p class="product-price">৳ {{ item.total|floatformat:2 }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- TOTAL PRICE BOX -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 20px 0; background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.25); border-radius: 10px; padding: 15px 20px;">
+                <tr>
+                    <td style="color: #e2e8f0; font-size: 15px; font-weight: 600;">মোট কার্ট মূল্য:</td>
+                    <td style="text-align: right; color: #22c55e; font-size: 20px; font-weight: 800;">৳ {{ total_price|floatformat:2 }}</td>
+                </tr>
+            </table>
+
+            <!-- COUPON SECTION (IF AVAILABLE) -->
+            {% if coupon_code %}
+            <div class="coupon-card">
+                <p class="coupon-title">🎁 শুধুমাত্র আপনার জন্য স্পেশাল {{ discount_percent }}% ডিসকাউন্ট!</p>
+                <div class="coupon-badge">{{ coupon_code }}</div>
+                <p class="coupon-hint">চেকআউট করার সময় এই কুপন কোডটি ব্যবহার করে ডিসকাউন্ট উপভোগ করুন। অফারটি সীমিত সময়ের জন্য প্রযোজ্য।</p>
+            </div>
+            {% endif %}
+
+            <!-- CALL TO ACTION BUTTON -->
+            <div class="cta-container">
+                <a href="{{ cart_url }}" class="cta-button" target="_blank">
+                    🛒 কার্টে ফিরে যান ও অর্ডার সম্পন্ন করুন
+                </a>
+            </div>
+
+            <!-- TRUST FEATURES -->
+            <div class="features">
+                <div class="feature-item">
+                    🛡️ <strong>১০০% অরিজিনাল</strong>
+                </div>
+                <div class="feature-item">
+                    🚚 <strong>দ্রুত ক্যাশ অন ডেলিভারি</strong>
+                </div>
+                <div class="feature-item">
+                    🔄 <strong>সহজ রিটার্ন পলিসি</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>আপনার কোনো প্রশ্ন থাকলে নির্দ্বিধায় এই ইমেইলে রিপ্লাই দিন অথবা আমাদের হটলাইনে যোগাযোগ করুন।</p>
+            <p>&copy; {% now "Y" %} Premium Store. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

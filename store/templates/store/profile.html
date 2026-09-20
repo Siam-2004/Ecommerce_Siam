@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - Premium Store</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #090d16; color: #ffffff; min-height: 100vh; }
+
+        /* Navbar */
+        .navbar { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .logo { font-size: 24px; font-weight: 700; color: #22c55e; text-decoration: none; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { color: #cbd5e1; text-decoration: none; font-size: 15px; font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: #22c55e; }
+
+        /* Dashboard Layout */
+        .dashboard-container { padding: 40px 50px; display: grid; grid-template-columns: 1fr 2fr; gap: 30px; max-width: 1400px; margin: 0 auto; }
+
+        .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .card-header { font-size: 18px; color: #22c55e; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+
+        /* Profile Update Form */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; color: #94a3b8; font-size: 13px; margin-bottom: 8px; }
+        .form-group input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px 15px; border-radius: 10px; outline: none; transition: 0.3s; }
+        .form-group input:focus { border-color: #22c55e; }
+        .btn-update { width: 100%; padding: 12px; background: #22c55e; color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-update:hover { background: #16a34a; box-shadow: 0 5px 15px rgba(34,197,94,0.3); }
+        .btn-logout { display: block; text-align: center; margin-top: 15px; color: #ef4444; text-decoration: none; font-size: 14px; font-weight: bold; padding: 10px; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; transition: 0.3s; }
+        .btn-logout:hover { background: rgba(239, 68, 68, 0.1); }
+
+        /* Flash Sale Deals Area */
+        .deals-area { margin-bottom: 30px; background: linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(15, 23, 42, 0.5) 100%); border-color: rgba(239, 68, 68, 0.2); }
+        .flash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+        .deal-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; padding: 10px; text-decoration: none; color: #fff; display: block; transition: 0.3s; position: relative; }
+        .deal-card:hover { transform: translateY(-5px); border-color: #ef4444; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.2); }
+        .deal-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        .deal-card h4 { font-size: 13px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .deal-card .price { color: #ef4444; font-weight: bold; font-size: 14px; }
+        .sale-badge { position: absolute; top: 5px; right: 5px; background: #ef4444; color: #fff; font-size: 10px; padding: 3px 8px; border-radius: 10px; font-weight: bold; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* Order History & Actions */
+        .order-list { display: flex; flex-direction: column; gap: 20px; }
+        .order-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; }
+        .order-header { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+        .order-id { font-size: 16px; font-weight: bold; color: #38bdf8; }
+        .order-date { color: #94a3b8; font-size: 13px; }
+        .status { padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        .status.pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .status.processing { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+        .status.delivered { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+
+        /* Action Buttons */
+        .action-btns { display: flex; gap: 10px; justify-content: flex-end; }
+        .btn-action { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
+        .btn-invoice { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .btn-invoice:hover { background: #3b82f6; color: #fff; }
+        .btn-track { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.3); }
+        .btn-track:hover { background: #8b5cf6; color: #fff; }
+        .btn-review { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); margin-top: 8px; display: inline-flex; }
+        .btn-review:hover { background: #f59e0b; color: #fff; }
+
+        .product-list { margin-top: 10px; }
+        .product-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; }
+        .product-info-left { display: flex; gap: 15px; align-items: center; }
+        .product-info-left img { width: 55px; height: 55px; object-fit: cover; border-radius: 8px; }
+        .product-info-left h5 { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+        .product-info-left p { font-size: 12px; color: #94a3b8; margin: 0; }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'product_list' %}" class="logo">E-Store<span style="color:white;">.</span></a>
+        <div class="nav-links">
+            <a href="{% url 'product_list' %}"><i class="fa-solid fa-home"></i> হোম</a>
+            <a href="{% url 'wishlist' %}"><i class="fa-solid fa-heart" style="color:#ef4444;"></i> উইশলিস্ট</a>
+            <a href="{% url 'cart_summary' %}"><i class="fa-solid fa-cart-shopping"></i> কার্ট ({{ cart_count|default:"0" }})</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Left Column: Profile Update -->
+        <div>
+            <div class="card" style="position: sticky; top: 100px;">
+                <h2 class="card-header"><i class="fa-solid fa-user-circle"></i> আমার প্রোফাইল</h2>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div style="padding: 10px; background: rgba(34, 197, 94, 0.2); color: #22c55e; border-radius: 8px; margin-bottom: 15px; font-size: 14px;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>পুরো নাম</label>
+                        <input type="text" name="first_name" value="{{ request.user.first_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ইমেইল অ্যাড্রেস</label>
+                        <input type="email" name="email" value="{{ request.user.email }}" required>
+                    </div>
+                    <button type="submit" class="btn-update"><i class="fa-solid fa-save"></i> আপডেট করুন</button>
+                </form>
+
+                <a href="{% url 'logout' %}" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> লগআউট</a>
+            </div>
+        </div>
+
+        <!-- Right Column: Deals & Orders -->
+        <div>
+            <!-- Exclusive Flash Sale Section -->
+            {% if flash_sale and flash_sale.products.all %}
+            <div class="card deals-area">
+                <h2 class="card-header" style="color: #ef4444;"><i class="fa-solid fa-bolt"></i> আপনার জন্য স্পেশাল ফ্ল্যাশ সেল!</h2>
+                <div class="flash-grid">
+                    {% for product in flash_sale.products.all %}
+                    <a href="{% url 'product_detail' product.slug %}" class="deal-card">
+
+                        <!-- ম্যাজিক ব্যাজ লজিক -->
+                        {% if product.get_discount_percent > 0 %}
+                            <span class="sale-badge">-{{ product.get_discount_percent }}% OFF</span>
+                        {% else %}
+                            <span class="sale-badge">HOT DEAL</span>
+                        {% endif %}
+
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="deal-img">
+                        {% endif %}
+                        <h4>{{ product.name }}</h4>
+
+                        <!-- ম্যাজিক প্রাইস লজিক -->
+                        <span class="price">
+                            {% if product.discount_price %}
+                                ৳ {{ product.discount_price }}
+                                <del style="color:#94a3b8; font-size:11px; margin-left:5px; font-weight:normal;">৳ {{ product.price }}</del>
+                            {% else %}
+                                ৳ {{ product.price }}
+                            {% endif %}
+                        </span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Order History Section -->
+            <div class="card">
+                <h2 class="card-header"><i class="fa-solid fa-box-open"></i> আমার কেনা প্রোডাক্টসমূহ</h2>
+
+                {% if orders %}
+                <div class="order-list">
+                    {% for order in orders %}
+                    <div class="order-item">
+                        <div class="order-header">
+                            <div>
+                                <span class="order-id">#Order-{{ order.id }}</span><br>
+                                <span class="order-date"><i class="fa-regular fa-calendar-alt"></i> {{ order.created_at|date:"d M, Y" }}</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span class="status {% if order.status == 'Pending' %}pending{% elif order.status == 'Processing' %}processing{% else %}delivered{% endif %}">
+                                    <i class="fa-solid fa-circle-dot" style="font-size: 10px; margin-right: 4px;"></i> {{ order.status }}
+                                </span>
+                                <!-- Invoice and Track Buttons -->
+                                <div class="action-btns">
+                                    <a href="{% url 'generate_invoice' order.id %}" target="_blank" class="btn-action btn-invoice"><i class="fa-solid fa-file-pdf"></i> ইনভয়েস ডাউনলোড</a>
+                                    <a href="{% url 'track_order' %}" class="btn-action btn-track"><i class="fa-solid fa-location-dot"></i> ট্র্যাক অর্ডার</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-list">
+                            {% for item in order.items.all %}
+                            <div class="product-row">
+                                <div class="product-info-left">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="img">
+                                    {% endif %}
+                                    <div>
+                                        <h5><a href="{% url 'product_detail' item.product.slug %}" style="color:#fff; text-decoration:none;">{{ item.product.name }}</a></h5>
+                                        <p>পরিমাণ: {{ item.quantity }} {% if item.size %}| সাইজ: {{ item.size }}{% endif %}</p>
+
+                                        <!-- Review Button (Only shows if order is delivered) -->
+                                        {% if order.status == 'Delivered' %}
+                                            <a href="{% url 'product_detail' item.product.slug %}#review-section" class="btn-action btn-review"><i class="fa-solid fa-star"></i> রিভিউ দিন</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div style="text-align: right; font-weight: bold;">
+                                    ৳{{ item.price }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div style="margin-top: 15px; text-align: right; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                            <span style="color: #94a3b8; font-size: 14px; margin-right: 10px;">{{ order.payment_method }}</span>
+                            <strong style="font-size: 18px;">সর্বমোট বিল: <span style="color:#22c55e;">৳{{ order.total_price }}</span></strong>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: 40px 0; color: #94a3b8;">
+                    <i class="fa-solid fa-basket-shopping" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <p>আপনি এখনও কোনো অর্ডার করেননি!</p>
+                    <a href="{% url 'product_list' %}" style="display:inline-block; margin-top:15px; padding:10px 20px; background:#22c55e; color:#fff; border-radius:8px; text-decoration:none; font-weight: bold;">শপিং শুরু করুন</a>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

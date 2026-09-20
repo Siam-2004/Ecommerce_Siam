@@ -1,0 +1,517 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neumorphic 3D Authentication</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-color: #e0e5ec;
+            --text-color: #4a4a4a;
+            --shadow-light: #ffffff;
+            --shadow-dark: #a3b1c6;
+            --electric-color-1: #3b82f6; /* Blue */
+            --electric-color-2: #8b5cf6; /* Purple */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 3D Scene Setup */
+        .auth-scene {
+            width: 380px;
+            height: 560px; /* Fixed height for smooth flipping */
+            perspective: 1500px;
+        }
+
+        /* The Flipping Card */
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Form Sections */
+        .form-section {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background-color: var(--bg-color);
+            border-radius: 30px;
+            box-shadow: 12px 12px 24px var(--shadow-dark),
+                       -12px -12px 24px var(--shadow-light);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #register-section {
+            transform: rotateY(180deg);
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .header-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            color: #f59e0b;
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+        .header-icon:hover {
+            transform: scale(1.1);
+        }
+        .header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        .header p {
+            font-size: 12px;
+            color: #7a7a7a;
+        }
+
+        /* Input Fields */
+        .input-wrapper {
+            position: relative;
+            border-radius: 15px;
+            margin-bottom: 18px;
+            padding: 2px;
+            background: var(--bg-color);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark),
+                        inset -5px -5px 10px var(--shadow-light);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:hover {
+            box-shadow: inset 7px 7px 14px var(--shadow-dark),
+                        inset -7px -7px 14px var(--shadow-light);
+            transform: translateY(-2px);
+        }
+        .input-wrapper:hover::before {
+            opacity: 0.4;
+        }
+
+        .input-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, var(--electric-color-1), var(--electric-color-2));
+            animation: spin 2s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -2;
+        }
+        .input-wrapper:focus-within::before {
+            opacity: 1;
+        }
+
+        .input-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: var(--bg-color);
+            border-radius: 13px;
+            z-index: -1;
+            box-shadow: inset 3px 3px 6px var(--shadow-dark),
+                        inset -3px -3px 6px var(--shadow-light);
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .input-field {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 14px 45px 14px 20px;
+            font-size: 13px;
+            color: var(--text-color);
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:hover, .input-field:focus {
+            font-weight: 600;
+            color: #222;
+        }
+        .input-field::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
+
+        /* Show/Hide Password Icon */
+        .toggle-password {
+            position: absolute;
+            right: 18px;
+            color: #9ca3af;
+            cursor: pointer;
+            z-index: 2;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .toggle-password:hover {
+            color: var(--electric-color-1);
+            transform: scale(1.1);
+        }
+
+        /* Extra Options */
+        .extra-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            margin-bottom: 25px;
+            color: #7a7a7a;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .neumorphic-checkbox {
+            appearance: none;
+            width: 16px; height: 16px;
+            background: var(--bg-color);
+            border-radius: 4px;
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+            cursor: pointer;
+            position: relative;
+            outline: none;
+        }
+        .neumorphic-checkbox:checked::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--electric-color-1);
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10px;
+        }
+
+        .forgot-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        .forgot-link:hover { color: var(--electric-color-1); }
+
+        /* Button Style */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 15px;
+            background: var(--bg-color);
+            box-shadow: 6px 6px 12px var(--shadow-dark),
+                       -6px -6px 12px var(--shadow-light);
+            color: var(--electric-color-1);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+        }
+        .btn-submit:active {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark),
+                        inset -4px -4px 8px var(--shadow-light);
+            color: var(--text-color);
+            transform: translateY(0);
+        }
+
+        /* === NEW: Google Button Neumorphic Style === */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 15px 0 10px 0;
+            color: #9ca3af;
+            font-size: 11px;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(163, 177, 198, 0.5);
+        }
+        .divider::before { margin-right: .5em; }
+        .divider::after { margin-left: .5em; }
+
+        .btn-google {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 15px;
+            background: var(--bg-color);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-google:hover {
+            transform: translateY(-2px);
+            color: #222;
+        }
+        .btn-google:active {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            transform: translateY(0);
+        }
+
+        /* Toggle Text */
+        .toggle-text {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: #7a7a7a;
+        }
+        .toggle-text span {
+            color: var(--electric-color-1);
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .toggle-text span:hover {
+            color: var(--electric-color-2);
+            text-decoration: underline;
+        }
+
+        /* Notification Toast Style */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast-msg {
+            padding: 12px 20px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-color);
+            background: var(--bg-color);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            animation: slideInRight 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast-msg i { color: var(--electric-color-1); font-size: 16px; }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    {% if messages %}
+        <div class="toast-notification">
+            {% for message in messages %}
+                <div class="toast-msg">
+                    <i class="fa-solid {% if message.tags == 'error' %}fa-circle-xmark{% else %}fa-circle-check{% endif %}"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Back to Store Link -->
+    <div style="position: absolute; top: 25px; left: 25px; z-index: 100;">
+        <a href="{% if next %}{{ next }}{% else %}{% url 'product_list' %}{% endif %}" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-color); background: var(--bg-color); padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 500; box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); transition: 0.3s;">
+            <i class="fa-solid fa-arrow-left"></i> ওয়েবসাইটে ফিরে যান
+        </a>
+    </div>
+
+    <div class="auth-scene">
+        <div class="card-inner" id="card-inner">
+
+            <!-- LOGIN SECTION -->
+            <div id="login-section" class="form-section">
+                <div class="header">
+                    <div class="header-icon"><i class="fa-solid fa-lock"></i></div>
+                    <h2>Welcome</h2>
+                    <p>Login to continue your journey</p>
+                </div>
+
+                <form method="POST" action="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next|default:'' }}">
+
+                    <div class="input-wrapper">
+                        <input type="email" name="email" class="input-field" placeholder="Email Address" required>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <input type="password" name="password" id="login-password" class="input-field" placeholder="Password" required>
+                        <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePasswordVisibility('login-password', this)"></i>
+                    </div>
+
+                    <div class="extra-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" class="neumorphic-checkbox">
+                            Remember me
+                        </label>
+                        <a href="{% url 'reset_password' %}" class="forgot-link">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit">LOGIN</button>
+                </form>
+
+                <!-- === NEW: Google Login Integration === -->
+                <div class="divider">OR</div>
+                <a href="{% provider_login_url 'google' next=next %}" class="btn-google">
+                    <i class="fa-brands fa-google" style="color: #ea4335; font-size: 16px;"></i> Continue with Google
+                </a>
+                <!-- ===================================== -->
+
+                <div class="toggle-text">
+                    Don't have an account? <span onclick="toggleAuth()">Sign up</span>
+                </div>
+            </div>
+
+            <!-- REGISTER SECTION -->
+            <div id="register-section" class="form-section">
+                <div class="header">
+                    <div class="header-icon"><i class="fa-solid fa-user-plus"></i></div>
+                    <h2>Create Account</h2>
+                    <p>Start your journey with us</p>
+                </div>
+
+                <form method="POST" action="{% url 'register' %}{% if next %}?next={{ next }}{% endif %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next|default:'' }}">
+
+                    <div class="input-wrapper">
+                        <input type="text" name="full_name" class="input-field" placeholder="Full Name" required>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <input type="email" name="email" class="input-field" placeholder="Email Address" required>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <input type="password" name="password" id="reg-password" class="input-field" placeholder="Password" required>
+                        <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePasswordVisibility('reg-password', this)"></i>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <input type="password" name="confirm_password" id="reg-confirm-password" class="input-field" placeholder="Confirm Password" required>
+                        <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePasswordVisibility('reg-confirm-password', this)"></i>
+                    </div>
+
+                    <button type="submit" class="btn-submit">CREATE ACCOUNT</button>
+                </form>
+
+                <!-- === NEW: Google Login Integration (Register Side) === -->
+                <div class="divider">OR</div>
+                <a href="{% provider_login_url 'google' next=next %}" class="btn-google">
+                    <i class="fa-brands fa-google" style="color: #ea4335; font-size: 16px;"></i> Sign up with Google
+                </a>
+                <!-- ===================================================== -->
+
+                <div class="toggle-text">
+                    Already have an account? <span onclick="toggleAuth()">Login</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Smooth 3D Flip Logic
+        function toggleAuth() {
+            const cardInner = document.getElementById('card-inner');
+            cardInner.classList.toggle('is-flipped');
+        }
+
+        // Show/Hide Password Logic
+        function togglePasswordVisibility(fieldId, iconElement) {
+            const passwordField = document.getElementById(fieldId);
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                // Change icon to 'eye'
+                iconElement.classList.remove("fa-eye-slash");
+                iconElement.classList.add("fa-eye");
+                iconElement.style.color = "var(--electric-color-1)"; // Active color
+            } else {
+                passwordField.type = "password";
+                // Change icon back to 'eye-slash'
+                iconElement.classList.remove("fa-eye");
+                iconElement.classList.add("fa-eye-slash");
+                iconElement.style.color = "#9ca3af"; // Normal color
+            }
+        }
+
+        // Auto-hide Django message toasts after 3.5 seconds
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-notification');
+            if(toast) {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 400);
+            }
+        }, 3500);
+    </script>
+</body>
+</html>

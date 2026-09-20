@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Address - Premium Store</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #090d16; color: #ffffff; min-height: 100vh; padding-bottom: 50px; }
+
+        /* Navbar */
+        .navbar { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 40px; }
+        .logo { font-size: 24px; font-weight: 700; color: #22c55e; text-decoration: none; }
+        .back-link { color: #cbd5e1; text-decoration: none; transition: 0.3s; font-size: 15px; }
+        .back-link:hover { color: #22c55e; }
+
+        /* Dashboard Layout */
+        .dashboard-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
+
+        /* Glass Panel */
+        .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+
+        /* Sidebar Nav */
+        .sidebar-nav { display: flex; flex-direction: column; gap: 10px; }
+        .nav-item { padding: 15px 20px; border-radius: 12px; color: #cbd5e1; text-decoration: none; font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 15px; transition: all 0.3s ease; border: 1px solid transparent; }
+        .nav-item i { font-size: 18px; width: 25px; text-align: center; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; transform: translateX(5px); }
+        .nav-item.active { background: rgba(34, 197, 94, 0.1); color: #22c55e; border-color: rgba(34, 197, 94, 0.3); box-shadow: 0 5px 15px rgba(34, 197, 94, 0.1); }
+        .nav-item.logout { color: #ef4444; margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.1); border-radius: 0 0 12px 12px; }
+        .nav-item.logout:hover { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+
+        .page-title { font-size: 22px; color: #f8fafc; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .page-title i { color: #22c55e; }
+
+        /* Address Card */
+        .address-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 16px; padding: 25px; position: relative; overflow: hidden; }
+        .address-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #22c55e; }
+
+        .address-row { display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-start; }
+        .address-row i { color: #94a3b8; font-size: 18px; margin-top: 3px; }
+        .address-details h4 { color: #cbd5e1; font-size: 14px; margin-bottom: 5px; font-weight: 500; }
+        .address-details p { color: #f8fafc; font-size: 16px; line-height: 1.5; }
+
+        .badge-default { position: absolute; top: 20px; right: 20px; background: rgba(34, 197, 94, 0.15); color: #22c55e; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid rgba(34, 197, 94, 0.3); }
+
+        .empty-state { text-align: center; padding: 40px 20px; color: #94a3b8; }
+        .empty-state i { font-size: 50px; color: rgba(255,255,255,0.1); margin-bottom: 20px; }
+
+        @media (max-width: 768px) {
+            .dashboard-container { grid-template-columns: 1fr; }
+            .sidebar { margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'product_list' %}" class="logo">E-Store<span style="color:white;">.</span></a>
+        <a href="{% url 'product_list' %}" class="back-link"><i class="fa-solid fa-house"></i> হোম পেজে যান</a>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <!-- Sidebar Navigation -->
+        <div class="glass-panel sidebar" style="padding: 20px 15px; height: fit-content;">
+            <div class="sidebar-nav">
+                <a href="{% url 'profile' %}" class="nav-item">
+                    <i class="fa-solid fa-user-shield"></i> আমার প্রোফাইল
+                </a>
+                <a href="{% url 'order_history' %}" class="nav-item">
+                    <i class="fa-solid fa-box-open"></i> অর্ডার হিস্ট্রি
+                </a>
+                <!-- এই পেজে ডেলিভারি ঠিকানা মেনুটি একটিভ (Active) থাকবে -->
+                <a href="{% url 'user_address' %}" class="nav-item active">
+                    <i class="fa-solid fa-location-dot"></i> ডেলিভারি ঠিকানা
+                </a>
+                <a href="{% url 'logout' %}" class="nav-item logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> লগআউট করুন
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="glass-panel main-content">
+            <h2 class="page-title"><i class="fa-solid fa-map-location-dot"></i> আপনার সেভ করা ঠিকানা</h2>
+
+            {% if address %}
+            <div class="address-card">
+                <span class="badge-default">সর্বশেষ ব্যবহৃত ঠিকানা</span>
+
+                <div class="address-row">
+                    <i class="fa-solid fa-user"></i>
+                    <div class="address-details">
+                        <h4>রিসিভারের নাম</h4>
+                        <p>{{ request.user.first_name }}</p>
+                    </div>
+                </div>
+
+                <div class="address-row">
+                    <i class="fa-solid fa-phone"></i>
+                    <div class="address-details">
+                        <h4>ফোন নম্বর</h4>
+                        <p>{{ phone }}</p>
+                    </div>
+                </div>
+
+                <div class="address-row" style="margin-bottom: 0;">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <div class="address-details">
+                        <h4>বিস্তারিত ঠিকানা</h4>
+                        <p>{{ address }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #64748b; font-size: 13px; margin-top: 15px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-circle-info"></i> আপনি পরবর্তীতে নতুন অর্ডার করার সময় চেকআউট পেজ থেকে এই ঠিকানাটি পরিবর্তন করতে পারবেন।
+            </p>
+
+            {% else %}
+            <!-- যদি কোনো ঠিকানা না থাকে -->
+            <div class="empty-state">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <h3>কোনো ঠিকানা পাওয়া যায়নি!</h3>
+                <p>আপনি এখনও কোনো অর্ডার করেননি। প্রথম অর্ডার করার সময় আপনার ঠিকানা সেভ হয়ে যাবে।</p>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</body>
+</html>

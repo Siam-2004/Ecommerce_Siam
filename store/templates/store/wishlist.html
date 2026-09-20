@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Store - Wishlist</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #090d16; color: #ffffff; min-height: 100vh; }
+
+        /* --- Navbar --- */
+        .navbar { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .logo { font-size: 24px; font-weight: 700; color: #22c55e; text-decoration: none; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { color: #cbd5e1; text-decoration: none; font-size: 15px; font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: #22c55e; }
+        .nav-btn { background: #22c55e; color: #fff !important; padding: 8px 16px; border-radius: 8px; }
+
+        .hero { padding: 50px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .hero h1 { font-size: 30px; margin-bottom: 10px; color: #ef4444; }
+        .hero p { color: #94a3b8; font-size: 16px; }
+
+        .product-container { padding: 50px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
+
+        /* ================== PRODUCT CARD ================== */
+        .product-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 15px; transition: all 0.5s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .product-card:hover { background: rgba(255, 255, 255, 0.06); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); border-color: rgba(239, 68, 68, 0.4); transform: translateY(-5px); }
+
+        .img-wrapper { width: 100%; height: 220px; border-radius: 15px; overflow: hidden; background: rgba(255,255,255,0.02); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; }
+        .product-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .product-card:hover .product-img { transform: scale(1.1); }
+
+        .product-info { flex: 1; display: flex; flex-direction: column; }
+        .product-info h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: #f8fafc; }
+        .price-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .price { color: #fff; font-size: 18px; font-weight: bold; }
+        .old-price { color: #64748b; text-decoration: line-through; font-size: 14px; margin-left: 8px; }
+
+        .action-area { max-height: 0; opacity: 0; transform: translateY(20px); transition: all 0.4s ease; overflow: hidden; }
+        .product-card:hover .action-area { max-height: 150px; opacity: 1; transform: translateY(0); margin-top: 10px; }
+
+        /* Dynamic Size CSS */
+        .variants-preview { display: flex; gap: 8px; margin-bottom: 12px; justify-content: center; flex-wrap: wrap; }
+        .variants-preview span { display: inline-block; font-size: 12px; font-weight: bold; padding: 5px 12px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #cbd5e1; transition: 0.3s; cursor: pointer; user-select: none; }
+        .variants-preview span.selected-size { background: #22c55e !important; color: #fff !important; border-color: #22c55e !important; }
+        .variants-preview span:hover:not(.selected-size) { border-color: #22c55e; }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } }
+        .shake-error { animation: shake 0.4s ease-in-out; border: 1px solid #ef4444 !important; border-radius: 8px; }
+
+        .add-cart-form { width: 100%; }
+        .btn-add-cart { width: 100%; padding: 12px; background: #22c55e; color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-add-cart:hover { background: #16a34a; box-shadow: 0 5px 15px rgba(34,197,94,0.4); }
+
+        .wishlist-btn { position: absolute; top: 25px; right: 25px; background: rgba(239, 68, 68, 0.2); backdrop-filter: blur(5px); border: 1px solid #ef4444; color: #ef4444; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: 0.3s; }
+        .wishlist-btn:hover { background: #ef4444; color: #fff; }
+
+        /* --- Sliding Cart CSS --- (Same as Home) */
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .cart-overlay.active { opacity: 1; visibility: visible; }
+        .cart-sidebar { position: fixed; top: 0; right: -450px; width: 100%; max-width: 400px; height: 100vh; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(25px); border-left: 1px solid rgba(255, 255, 255, 0.1); z-index: 1000; transition: right 0.4s ease; display: flex; flex-direction: column; padding: 25px; }
+        .cart-sidebar.active { right: 0; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 15px; margin-bottom: 20px; }
+        .cart-header h2 { font-size: 22px; color: #22c55e; }
+        .close-cart { background: rgba(255,255,255,0.1); border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; transition: 0.3s; }
+        .close-cart:hover { background: #ef4444; transform: rotate(90deg); }
+        .cart-items-container { flex: 1; overflow-y: auto; padding-right: 10px; }
+        .cart-item { display: flex; gap: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .cart-item-img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; }
+        .cart-item-info { flex: 1; }
+        .cart-item-info h4 { font-size: 15px; margin-bottom: 5px; }
+        .cart-item-info .price { color: #22c55e; font-weight: bold; font-size: 14px; }
+        .cart-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px; margin-top: auto; }
+        .cart-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+        .btn-checkout { width: 100%; padding: 14px; background: #22c55e; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; display: block; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'product_list' %}" class="logo">E-Store<span style="color:white;">.</span></a>
+        <div class="nav-links">
+            <a href="{% url 'product_list' %}">হোম</a>
+            <a href="#" onclick="openCart(event)" id="cart-nav-link">
+                <i class="fa-solid fa-cart-shopping"></i> কার্ট (<span id="cart-count">{{ cart_count|default:"0" }}</span>)
+            </a>
+            <a href="{% url 'profile' %}" class="nav-btn"><i class="fa-solid fa-user"></i> প্রোফাইল</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1><i class="fa-solid fa-heart"></i> আপনার উইশলিস্ট</h1>
+        <p>আপনার পছন্দের সেভ করা প্রোডাক্টগুলো এখানে রয়েছে।</p>
+    </div>
+
+    <div class="product-container">
+        <div class="grid">
+            {% for item in wishlist_items %}
+            {% with product=item.product %}
+            <div class="product-card" id="wish-card-{{ product.id }}">
+
+                <!-- Remove from wishlist btn -->
+                <button class="wishlist-btn" onclick="removeFromWishlist(event, '{{ product.id }}')" title="উইশলিস্ট থেকে মুছুন">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <div class="img-wrapper">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+                    {% endif %}
+                </div>
+
+                <div class="product-info">
+                    <a href="{% url 'product_detail' product.slug %}" style="text-decoration: none;">
+                        <h3>{{ product.name|truncatechars:35 }}</h3>
+                    </a>
+
+                    <div class="price-row">
+                        <div>
+                            <span class="price">৳ {{ product.price }}</span>
+                            {% if product.discount_price %}
+                                <span class="old-price">৳ {{ product.discount_price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="action-area">
+                        <!-- === উইশলিস্টেও ডাইনামিক সাইজ রেন্ডারিং === -->
+                        {% if product.sizes.all %}
+                        <div class="variants-preview" id="variants-{{ product.id }}">
+                            {% for size in product.sizes.all %}
+                                <span onclick="selectSize('{{ product.id }}', '{{ size.name }}', this)">{{ size.name }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <form action="{% url 'cart_add' product.id %}" method="POST" class="add-cart-form" data-has-size="{% if product.sizes.count > 0 %}true{% else %}false{% endif %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <input type="hidden" name="size" id="size-{{ product.id }}" value="">
+
+                            <button type="submit" class="btn-add-cart">
+                                <i class="fa-solid fa-cart-plus"></i> কার্টে যোগ করুন
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            {% endwith %}
+            {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #94a3b8;">
+                <i class="fa-regular fa-heart" style="font-size: 50px; margin-bottom: 20px; color: rgba(255,255,255,0.1);"></i>
+                <h2>উইশলিস্ট সম্পূর্ণ খালি!</h2>
+                <p>পছন্দের প্রোডাক্টগুলোতে লাভ রিঅ্যাক্ট দিয়ে এখানে সেভ করে রাখুন।</p>
+                <a href="{% url 'product_list' %}" class="btn-add-cart" style="max-width: 200px; margin: 20px auto;">শপিং করুন</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Sliding Cart UI (Same exactly) -->
+    <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2><i class="fa-solid fa-cart-shopping"></i> আপনার কার্ট</h2>
+            <button class="close-cart" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items-container" id="sidebar-cart-items">
+            {% for item in cart %}
+            <div class="cart-item">
+                <div class="cart-item-img">
+                    {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                    {% endif %}
+                </div>
+                <div class="cart-item-info">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <h4>{{ item.product.name|truncatechars:20 }}</h4>
+                        <a href="{% url 'cart_remove' item.product.id %}?size={{ item.size }}" class="cart-action-btn" style="color: #ef4444; text-decoration: none;"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                    {% if item.size %}
+                        <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 5px;">Size: {{ item.size }}</p>
+                    {% endif %}
+                    <p class="price">৳ {{ item.price }}</p>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+                        <p style="font-size: 13px; color: #94a3b8; margin: 0;">পরিমাণ:</p>
+                        <div style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                            <a href="{% url 'cart_decrement' item.product.id %}?size={{ item.size }}" class="cart-action-btn" style="color: #cbd5e1; text-decoration: none; font-weight: bold;">-</a>
+                            <span style="font-size: 14px; font-weight: 600; width: 20px; text-align: center;">{{ item.quantity }}</span>
+                            <a href="{% url 'cart_add' item.product.id %}?size={{ item.size }}" class="cart-action-btn" style="color: #cbd5e1; text-decoration: none; font-weight: bold;">+</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>সর্বমোট:</span>
+                <span style="color: #22c55e;">৳ {{ cart.get_total_price|default:"0" }}</span>
+            </div>
+            <a href="{% url 'cart_summary' %}" class="btn-checkout">চেকআউট পেজে যান <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <script>
+        function selectSize(productId, sizeName, element) {
+            let container = document.getElementById('variants-' + productId);
+            let spans = container.getElementsByTagName('span');
+            let hiddenInput = document.getElementById('size-' + productId);
+
+            let isAlreadySelected = element.classList.contains('selected-size');
+
+            for(let span of spans) {
+                span.classList.remove('selected-size');
+                span.style.background = 'transparent';
+                span.style.color = '#cbd5e1';
+                span.style.borderColor = 'rgba(255,255,255,0.2)';
+            }
+
+            if (isAlreadySelected) {
+                hiddenInput.value = '';
+            } else {
+                element.classList.add('selected-size');
+                hiddenInput.value = sizeName;
+                container.classList.remove('shake-error');
+            }
+        }
+
+        async function removeFromWishlist(e, productId) {
+            e.preventDefault();
+            try {
+                const response = await fetch(`/wishlist/toggle/${productId}/`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                if (response.ok) {
+                    // Item remove hole page ta smooth bhabe reload hobe
+                    window.location.reload();
+                }
+            } catch (error) { console.error('Error:', error); }
+        }
+
+        function openCart(e) {
+            if(e) e.preventDefault();
+            document.getElementById('cartSidebar').classList.add('active');
+            document.getElementById('cartOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeCart() {
+            document.getElementById('cartSidebar').classList.remove('active');
+            document.getElementById('cartOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function refreshCartUI() {
+            try {
+                const response = await fetch(window.location.href, { cache: 'no-store' });
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                document.getElementById('sidebar-cart-items').innerHTML = doc.getElementById('sidebar-cart-items').innerHTML;
+                document.querySelector('.cart-total').innerHTML = doc.querySelector('.cart-total').innerHTML;
+                document.getElementById('cart-count').innerText = doc.getElementById('cart-count').innerText;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebarCartItems = document.getElementById('sidebar-cart-items');
+            if (sidebarCartItems) {
+                sidebarCartItems.addEventListener('click', async (e) => {
+                    const btn = e.target.closest('.cart-action-btn');
+                    if (btn) {
+                        e.preventDefault();
+                        try {
+                            const response = await fetch(btn.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                            if (response.ok) await refreshCartUI();
+                        } catch (error) { console.error('Error:', error); }
+                    }
+                });
+            }
+
+            // === 스마트 আনলক এবং সাইজ ভ্যালিডেশন ===
+            const cartForms = document.querySelectorAll('.add-cart-form');
+            cartForms.forEach(form => {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const hasSize = form.getAttribute('data-has-size') === 'true';
+                    const sizeInput = form.querySelector('input[name="size"]');
+
+                    if (hasSize && sizeInput && sizeInput.value === '') {
+                        let variantsBox = form.previousElementSibling;
+                        if(variantsBox) {
+                            variantsBox.classList.add('shake-error');
+                            setTimeout(() => variantsBox.classList.remove('shake-error'), 400);
+                        }
+                        return;
+                    }
+
+                    const btn = form.querySelector('.btn-add-cart');
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> যুক্ত হচ্ছে...';
+                    btn.style.pointerEvents = 'none';
+
+                    try {
+                        const formData = new FormData(form);
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        });
+
+                        if (response.ok) {
+                            await refreshCartUI();
+
+                            btn.innerHTML = '<i class="fa-solid fa-check-circle"></i> যুক্ত হয়েছে';
+                            btn.style.background = 'rgba(34, 197, 94, 0.2)';
+                            btn.style.color = '#22c55e';
+                            btn.style.borderColor = '#22c55e';
+
+                            openCart();
+
+                            // ২ সেকেন্ড পর বাটন স্মার্টলি আনলক হয়ে যাবে
+                            setTimeout(() => {
+                                btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> কার্টে যোগ করুন';
+                                btn.style.background = '#22c55e';
+                                btn.style.color = '#fff';
+                                btn.style.pointerEvents = 'auto';
+
+                                if (sizeInput) sizeInput.value = '';
+                                let variantsBox = form.previousElementSibling;
+                                if(variantsBox) {
+                                    let spans = variantsBox.getElementsByTagName('span');
+                                    for(let span of spans) {
+                                        span.classList.remove('selected-size');
+                                        span.style.background = 'transparent';
+                                        span.style.color = '#cbd5e1';
+                                        span.style.borderColor = 'rgba(255,255,255,0.2)';
+                                    }
+                                }
+                            }, 2000);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success - Premium Store</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body {
+            background: #090d16;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.15) 0%, transparent 50%);
+        }
+
+        .success-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        /* Glass Panel */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 24px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 40px rgba(34, 197, 94, 0.1);
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Success Icon Animation */
+        .icon-wrapper {
+            width: 100px;
+            height: 100px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px auto;
+            position: relative;
+        }
+        .icon-wrapper i {
+            font-size: 50px;
+            color: #22c55e;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s both;
+        }
+        .icon-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #22c55e;
+            border-radius: 50%;
+            animation: ripple 1.5s infinite ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .glass-card h1 { font-size: 28px; margin-bottom: 10px; color: #f8fafc; }
+        .glass-card p.subtitle { color: #94a3b8; font-size: 15px; margin-bottom: 30px; line-height: 1.6; }
+
+        /* Order Details Box */
+        .order-details {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            font-size: 15px;
+        }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-row .label { color: #94a3b8; }
+        .detail-row .value { color: #f8fafc; font-weight: 600; }
+        .status-badge {
+            background: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        /* Action Buttons */
+        .btn {
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+            cursor: pointer;
+        }
+        .btn-group { display: flex; gap: 15px; margin-top: 15px; }
+        .btn-group .btn { flex: 1; }
+
+        .btn-primary {
+            background: #22c55e;
+            color: #fff;
+            border: 1px solid #22c55e;
+        }
+        .btn-primary:hover {
+            background: #16a34a;
+            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* PDF Button Style */
+        .btn-pdf {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .btn-pdf:hover {
+            background: #ef4444;
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        @media (max-width: 500px) {
+            .btn-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-container">
+        <div class="glass-card">
+
+            <div class="icon-wrapper">
+                <div class="icon-ring"></div>
+                <i class="fa-solid fa-check"></i>
+            </div>
+
+            <h1>অর্ডার সম্পন্ন হয়েছে!</h1>
+            <p class="subtitle">ধন্যবাদ, <strong>{{ order.full_name }}</strong>! আপনার অর্ডারটি সফলভাবে রিসিভ করা হয়েছে। খুব শিগগিরই আমরা আপনার সাথে যোগাযোগ করব।</p>
+
+            <div class="order-details">
+                <div class="detail-row">
+                    <span class="label">অর্ডার আইডি:</span>
+                    <span class="value">#{{ order.id }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">সর্বমোট বিল:</span>
+                    <!-- FIX: Here order.total_price is used to show the correct total amount -->
+                    <span class="value" style="color: #22c55e;">৳ {{ order.total_price }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">পেমেন্ট মেথড:</span>
+                    <span class="value">{{ order.payment_method }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">স্ট্যাটাস:</span>
+                    <span class="status-badge">{{ order.status|default:"Pending" }}</span>
+                </div>
+            </div>
+
+            <!-- PDF Download Button (Integrated with your backend logic) -->
+            <a href="{% url 'generate_invoice' order.id %}" target="_blank" class="btn btn-pdf">
+                <i class="fa-solid fa-file-pdf"></i> ইনভয়েস ডাউনলোড করুন (PDF)
+            </a>
+
+            <div class="btn-group">
+                <a href="{% url 'order_history' %}" class="btn btn-outline">
+                    <i class="fa-solid fa-clock-rotate-left"></i> অর্ডার হিস্ট্রি
+                </a>
+                <a href="{% url 'product_list' %}" class="btn btn-primary">
+                    <i class="fa-solid fa-cart-shopping"></i> আরও শপিং করুন
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

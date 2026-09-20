@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Exclusive Portal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body {
+            background-color: #e0e5ec;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .neumorphic-card {
+            width: 400px;
+            padding: 40px;
+            background-color: #e0e5ec;
+            border-radius: 20px;
+            box-shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #e0e5ec;
+            box-shadow: 7px 7px 15px rgb(163,177,198,0.6), -7px -7px 15px rgba(255,255,255, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffaa00; /* Lock icon color from your screenshot */
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        h2 { color: #333; margin-bottom: 5px; font-size: 22px; font-weight: 700; }
+        p.subtitle { color: #777; font-size: 13px; margin-bottom: 30px; }
+
+        form { width: 100%; }
+
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            outline: none;
+            background-color: #e0e5ec;
+            border-radius: 12px;
+            box-shadow: inset 5px 5px 10px rgb(163,177,198,0.6), inset -5px -5px 10px rgba(255,255,255, 0.5);
+            color: #333;
+            font-size: 14px;
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 12px;
+        }
+        .options label { display: flex; align-items: center; gap: 8px; color: #777; cursor: pointer; }
+        .options a { color: #555; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .options a:hover { color: #3b82f6; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            outline: none;
+            border-radius: 12px;
+            background-color: #e0e5ec;
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 6px 6px 10px rgb(163,177,198,0.6), -6px -6px 10px rgba(255,255,255, 0.5);
+            transition: 0.2s;
+        }
+        .btn-submit:active {
+            box-shadow: inset 4px 4px 8px rgb(163,177,198,0.6), inset -4px -4px 8px rgba(255,255,255, 0.5);
+        }
+
+        .switch-auth { margin-top: 25px; font-size: 13px; color: #777; text-align: center; width: 100%; }
+        .switch-auth a { color: #3b82f6; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="neumorphic-card">
+        <div class="icon"><i class="fa-solid fa-lock"></i></div>
+        <h2>Welcome</h2>
+        <p class="subtitle">Login to continue your journey</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="email" name="email" required placeholder="example@gmail.com">
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" required placeholder=".....">
+            </div>
+
+            <div class="options">
+                <label><input type="checkbox"> Remember me</label>
+                <!-- এই যে ম্যাজিক লিংক, যেটা আপনাকে পাসওয়ার্ড রিসেট পেজে নিয়ে যাবে -->
+                <a href="{% url 'reset_password' %}">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-submit">LOGIN</button>
+        </form>
+
+        <div class="switch-auth">
+            Don't have an account? <a href="{% url 'register' %}">Sign up</a>
+        </div>
+    </div>
+
+</body>
+</html>
