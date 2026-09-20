@@ -1,0 +1,599 @@
+<!-- ========================================= -->
+<!-- === LUXURY STORE FOOTER (EXACT REPLICA) === -->
+<!-- ========================================= -->
+<footer class="jm-footer">
+    <div class="jm-footer-container">
+        <div class="jm-footer-grid">
+            <!-- Column 1: Brand & Social -->
+            <div class="jm-footer-col jm-brand-col">
+                <div class="jm-brand-header">
+                    <div class="jm-logo-badge">
+                        <i class="fa-solid fa-futbol"></i>
+                    </div>
+                    <span class="jm-brand-title">Premium Store </span>
+                </div>
+                <p class="jm-brand-desc">
+                    we handpick every piece in our catalogue
+                </p>
+                <div class="jm-follow-block">
+                    <span class="jm-follow-label">FOLLOW US</span>
+                    <div class="jm-social-links">
+                        <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="jm-social-btn" aria-label="Facebook" title="Facebook">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="jm-social-btn" aria-label="Instagram" title="Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/8801300778479" target="_blank" rel="noopener noreferrer" class="jm-social-btn" aria-label="WhatsApp" title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: Quick Links -->
+            <div class="jm-footer-col">
+                <h4 class="jm-col-heading">QUICK LINKS</h4>
+                <ul class="jm-link-list">
+                    <li><a href="{% url 'product_list' %}" class="jm-link">Products</a></li>
+                    <li><a href="javascript:void(0)" onclick="openFooterModal('aboutModal')" class="jm-link">About Us</a></li>
+                    <li><a href="javascript:void(0)" onclick="openFooterModal('contactModal')" class="jm-link">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 3: Company -->
+            <div class="jm-footer-col">
+                <h4 class="jm-col-heading">COMPANY</h4>
+                <ul class="jm-link-list">
+                    <li><a href="javascript:void(0)" onclick="openFooterModal('termsModal')" class="jm-link">Terms & Conditions</a></li>
+                    <li><a href="javascript:void(0)" onclick="openFooterModal('privacyModal')" class="jm-link">Privacy Policy</a></li>
+                    <li><a href="javascript:void(0)" onclick="openFooterModal('returnModal')" class="jm-link">Return Policy</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 4: Contact -->
+            <div class="jm-footer-col">
+                <h4 class="jm-col-heading">CONTACT</h4>
+                <ul class="jm-contact-list">
+                    <li class="jm-contact-item">
+                        <i class="fa-solid fa-location-dot jm-contact-icon"></i>
+                        <a href="https://maps.google.com/?q=60+feet+Road,+Mirpur-1,+Dhaka" target="_blank" rel="noopener noreferrer" class="jm-contact-link">
+                            60 feet Road, Opposite of Yamaha showroom, Mirpur-1 1216
+                        </a>
+                    </li>
+                    <li class="jm-contact-item">
+                        <i class="fa-solid fa-phone jm-contact-icon"></i>
+                        <a href="tel:+8801329529280" class="jm-contact-link jm-phone-link">
+                            +880 13 295 29280
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer Bottom Bar -->
+        <div class="jm-footer-bottom">
+            <div class="jm-footer-bottom-spacer"></div>
+            <p class="jm-copyright">
+                &copy; 2025 Jersey Museum BD &middot; A <span class="jm-brand-highlight">Coding Viper</span> Product
+            </p>
+            <div class="jm-scroll-top-wrapper">
+                <button type="button" class="jm-scroll-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to top" title="Scroll to top">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ========================================= -->
+<!-- === INTERACTIVE MODALS FOR FOOTER LINKS === -->
+<!-- ========================================= -->
+<div class="jm-modal-overlay" id="jmModalOverlay" onclick="closeFooterModals(event)">
+    <!-- About Us Modal -->
+    <div class="jm-modal-card" id="aboutModal">
+        <div class="jm-modal-header">
+            <div class="jm-modal-title"><i class="fa-solid fa-circle-info" style="color:#22c55e;"></i> About Us</div>
+            <button class="jm-modal-close" onclick="closeFooterModals()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="jm-modal-body">
+            <h3>Welcome to Jersey Museum BD</h3>
+            <p>We are Bangladesh's premier authentic football jersey and lifestyle destination. From international fan kits to rare retro collector editions, we handpick every piece in our catalogue to bring you 100% premium quality craftsmanship.</p>
+            <p>Our mission is to connect every football fan with the jerseys and gear of the teams and legends they love, with prompt delivery across the nation.</p>
+        </div>
+    </div>
+
+    <!-- Contact Us Modal -->
+    <div class="jm-modal-card" id="contactModal">
+        <div class="jm-modal-header">
+            <div class="jm-modal-title"><i class="fa-solid fa-headset" style="color:#22c55e;"></i> Contact Us</div>
+            <button class="jm-modal-close" onclick="closeFooterModals()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="jm-modal-body">
+            <h3>Get in Touch with Us</h3>
+            <p>We are here to assist you with order inquiries, sizing questions, or custom bulk orders.</p>
+            <div class="jm-modal-info-box">
+                <p><strong><i class="fa-solid fa-location-dot" style="color:#22c55e; margin-right:8px;"></i>Address:</strong> 60 feet Road, Opposite of Yamaha showroom, Mirpur-1, Dhaka 1216</p>
+                <p><strong><i class="fa-solid fa-phone" style="color:#22c55e; margin-right:8px;"></i>Phone:</strong> <a href="tel:+8801329529280" style="color:#22c55e; text-decoration:none;">+880 13 295 29280</a></p>
+                <p><strong><i class="fa-brands fa-whatsapp" style="color:#22c55e; margin-right:8px;"></i>WhatsApp:</strong> <a href="https://wa.me/8801329529280" target="_blank" style="color:#22c55e; text-decoration:none;">Chat on WhatsApp</a></p>
+                <p><strong><i class="fa-solid fa-clock" style="color:#22c55e; margin-right:8px;"></i>Hours:</strong> 10:00 AM - 10:00 PM (Everyday)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Modal -->
+    <div class="jm-modal-card" id="termsModal">
+        <div class="jm-modal-header">
+            <div class="jm-modal-title"><i class="fa-solid fa-file-contract" style="color:#22c55e;"></i> Terms & Conditions</div>
+            <button class="jm-modal-close" onclick="closeFooterModals()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="jm-modal-body">
+            <h3>Terms of Service</h3>
+            <p>1. <strong>Order Placement:</strong> Orders can be placed online through our website. Please provide accurate delivery address and contact details.</p>
+            <p>2. <strong>Pricing & Availability:</strong> All prices are displayed in BDT (৳). We reserve the right to modify prices and availability without prior notice.</p>
+            <p>3. <strong>Payment:</strong> We accept Cash on Delivery (COD) as well as bKash digital payment.</p>
+            <p>4. <strong>Delivery Timeline:</strong> Inside Dhaka deliveries typically take 24-48 hours. Deliveries outside Dhaka take 48-72 hours via reliable courier partners.</p>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="jm-modal-card" id="privacyModal">
+        <div class="jm-modal-header">
+            <div class="jm-modal-title"><i class="fa-solid fa-shield-halved" style="color:#22c55e;"></i> Privacy Policy</div>
+            <button class="jm-modal-close" onclick="closeFooterModals()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="jm-modal-body">
+            <h3>Your Privacy is Protected</h3>
+            <p>We respect your privacy and are committed to protecting your personal information.</p>
+            <p>1. <strong>Data Collection:</strong> We only collect necessary contact information (name, phone number, address, and email) strictly for processing and delivering your orders.</p>
+            <p>2. <strong>Security:</strong> All transactions and account credentials are encrypted and stored safely. We never sell, rent, or share customer data with third parties.</p>
+            <p>3. <strong>Communications:</strong> We only reach out to you regarding order confirmations, tracking updates, and critical customer support.</p>
+        </div>
+    </div>
+
+    <!-- Return Policy Modal -->
+    <div class="jm-modal-card" id="returnModal">
+        <div class="jm-modal-header">
+            <div class="jm-modal-title"><i class="fa-solid fa-rotate-left" style="color:#22c55e;"></i> Return & Replacement Policy</div>
+            <button class="jm-modal-close" onclick="closeFooterModals()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="jm-modal-body">
+            <h3>Hassle-Free Return & Exchange</h3>
+            <p>We take pride in our product quality and want you to be 100% satisfied with your order.</p>
+            <p>1. <strong>7 Days Exchange Window:</strong> If you face size fitting issues or any manufacturing defect, notify us within 7 days of delivery.</p>
+            <p>2. <strong>Condition:</strong> Products must be unworn, unwashed, and in their original packaging with tags intact.</p>
+            <p>3. <strong>Process:</strong> Contact our helpline (+880 13 295 29280) or WhatsApp with your order number and issue details. Our support team will guide you through a quick exchange.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================= -->
+<!-- === FOOTER STYLES === -->
+<!-- ========================================= -->
+<style>
+    /* Footer Container */
+    .jm-footer {
+        background: linear-gradient(180deg, #090d16 0%, #050811 100%);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        padding: 60px 0 35px 0;
+        position: relative;
+        z-index: 10;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .jm-footer-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 40px;
+    }
+
+    /* 4 Column Layout */
+    .jm-footer-grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr 1.1fr 1.5fr;
+        gap: 50px;
+        margin-bottom: 50px;
+    }
+
+    .jm-footer-col {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Brand Header */
+    .jm-brand-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .jm-logo-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #4ade80, #22c55e);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #050811;
+        font-size: 18px;
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.35);
+        flex-shrink: 0;
+    }
+
+    .jm-brand-title {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: #ffffff;
+        line-height: 1.2;
+    }
+
+    .jm-brand-desc {
+        color: #94a3b8;
+        font-size: 13.5px;
+        line-height: 1.7;
+        margin: 0 0 25px 0;
+        max-width: 380px;
+    }
+
+    /* Follow Us Section */
+    .jm-follow-block {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .jm-follow-label {
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        color: #ffffff;
+    }
+
+    .jm-social-links {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .jm-social-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #cbd5e1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .jm-social-btn:hover {
+        border-color: #22c55e;
+        color: #22c55e;
+        background: rgba(34, 197, 94, 0.12);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(34, 197, 94, 0.25);
+    }
+
+    /* Column Headings */
+    .jm-col-heading {
+        font-size: 13.5px;
+        font-weight: 700;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        color: #ffffff;
+        margin-bottom: 22px;
+    }
+
+    /* Quick Links & Company Links */
+    .jm-link-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .jm-link {
+        color: #94a3b8;
+        font-size: 13.5px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        display: inline-block;
+        font-weight: 400;
+    }
+
+    .jm-link:hover {
+        color: #22c55e;
+        transform: translateX(4px);
+    }
+
+    /* Contact List */
+    .jm-contact-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .jm-contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        color: #94a3b8;
+        font-size: 13.5px;
+        line-height: 1.6;
+    }
+
+    .jm-contact-icon {
+        color: #cbd5e1;
+        font-size: 16px;
+        margin-top: 3px;
+        flex-shrink: 0;
+    }
+
+    .jm-contact-link {
+        color: #94a3b8;
+        text-decoration: none;
+        transition: color 0.25s ease;
+    }
+
+    .jm-contact-link:hover {
+        color: #22c55e;
+    }
+
+    .jm-phone-link {
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    /* Footer Bottom Bar */
+    .jm-footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding-top: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .jm-footer-bottom-spacer {
+        width: 42px;
+    }
+
+    .jm-copyright {
+        color: #64748b;
+        font-size: 13px;
+        text-align: center;
+        margin: 0;
+        letter-spacing: 0.3px;
+        flex: 1;
+    }
+
+    .jm-brand-highlight {
+        color: #94a3b8;
+        font-weight: 500;
+    }
+
+    .jm-scroll-top-wrapper {
+        width: 42px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .jm-scroll-top-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: transparent;
+        border: 1.5px solid rgba(255, 255, 255, 0.4);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    .jm-scroll-top-btn:hover {
+        border-color: #22c55e;
+        color: #22c55e;
+        background: rgba(34, 197, 94, 0.1);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    /* Modal Overlay & Cards */
+    .jm-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(8px);
+        z-index: 99999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .jm-modal-overlay.active {
+        display: flex;
+        animation: jmFadeIn 0.3s ease;
+    }
+
+    .jm-modal-card {
+        background: #0d1322;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        width: 100%;
+        max-width: 580px;
+        padding: 28px 30px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+        display: none;
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+    }
+
+    .jm-modal-card.active {
+        display: block;
+        transform: scale(1);
+    }
+
+    .jm-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 18px;
+    }
+
+    .jm-modal-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .jm-modal-close {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        font-size: 20px;
+        cursor: pointer;
+        transition: color 0.2s;
+        padding: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .jm-modal-close:hover {
+        color: #ef4444;
+    }
+
+    .jm-modal-body h3 {
+        font-size: 16px;
+        color: #f8fafc;
+        margin-bottom: 12px;
+    }
+
+    .jm-modal-body p {
+        font-size: 13.5px;
+        color: #cbd5e1;
+        line-height: 1.7;
+        margin-bottom: 12px;
+    }
+
+    .jm-modal-info-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-top: 15px;
+    }
+
+    .jm-modal-info-box p {
+        margin-bottom: 8px;
+    }
+
+    .jm-modal-info-box p:last-child {
+        margin-bottom: 0;
+    }
+
+    @keyframes jmFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .jm-footer-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .jm-footer {
+            padding: 45px 0 95px 0; /* extra bottom padding for mobile app nav */
+        }
+
+        .jm-footer-container {
+            padding: 0 20px;
+        }
+
+        .jm-footer-grid {
+            grid-template-columns: 1fr;
+            gap: 35px;
+            margin-bottom: 35px;
+        }
+
+        .jm-brand-desc {
+            max-width: 100%;
+        }
+
+        .jm-footer-bottom {
+            flex-direction: column-reverse;
+            gap: 20px;
+        }
+
+        .jm-footer-bottom-spacer {
+            display: none;
+        }
+
+        .jm-scroll-top-wrapper {
+            width: auto;
+        }
+    }
+</style>
+
+<!-- ========================================= -->
+<!-- === FOOTER JAVASCRIPT === -->
+<!-- ========================================= -->
+<script>
+    function openFooterModal(modalId) {
+        const overlay = document.getElementById('jmModalOverlay');
+        const modals = document.querySelectorAll('.jm-modal-card');
+        modals.forEach(m => m.classList.remove('active'));
+        const target = document.getElementById(modalId);
+        if (target && overlay) {
+            overlay.classList.add('active');
+            target.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeFooterModals(e) {
+        if (!e || e.target.id === 'jmModalOverlay' || e.target.closest('.jm-modal-close')) {
+            const overlay = document.getElementById('jmModalOverlay');
+            const modals = document.querySelectorAll('.jm-modal-card');
+            modals.forEach(m => m.classList.remove('active'));
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeFooterModals();
+        }
+    });
+</script>
