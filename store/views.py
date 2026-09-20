@@ -662,6 +662,7 @@ def order_history(request):
     return render(request, 'store/order_history.html', {'orders': orders})
 
 
+
 GEMINI_API_KEY = "AQ.Ab8RN6Jew8UhFbPRAjZeH3Z5NSePmR_iercrN10YNq7qXUuCEQ"
 
 

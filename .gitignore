@@ -9,8 +9,6 @@ __pycache__/
 *$py.class
 
 # Django
-db.sqlite3
-db.sqlite3-journal
 
 # Environment variables
 .env
@@ -23,8 +21,5 @@ db.sqlite3-journal
 .DS_Store
 
 # Static/Media generated files
-staticfiles/
-media/
 
 # Logs
-*.log

@@ -218,7 +218,7 @@
         /* ========================================= */
         /* === MOBILE APP-LIKE BOTTOM NAVIGATION === */
         /* ========================================= */
-        .mobile-bottom-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: rgba(10, 15, 28, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.1); z-index: 1000; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); padding-bottom: env(safe-area-inset-bottom); }
+        .mobile-bottom-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: rgba(10, 15, 28, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.1); z-index: 1050; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); padding-bottom: env(safe-area-inset-bottom); }
         .mobile-bottom-nav.hide { transform: translateY(150%); }
         .nav-items-container { display: flex; justify-content: space-around; align-items: center; height: 100%; padding: 0 10px; }
         .mob-nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #94a3b8; gap: 4px; transition: 0.3s; position: relative; width: 20%; }
@@ -232,17 +232,17 @@
         .mob-nav-item.floating-cart span { display: none; }
         .mob-cart-badge { position: absolute; top: -2px; right: 0px; background: #ef4444; color: white; font-size: 10px; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid #090d16; }
 
+        .whatsapp-float { position: fixed; width: 58px; height: 58px; bottom: 30px; right: 30px; background-color: #25d366; color: #FFF; border-radius: 50px; text-align: center; font-size: 32px; box-shadow: 2px 2px 15px rgba(37, 211, 102, 0.4); z-index: 990; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease; animation: pulse-whatsapp 2s infinite; }
+        .whatsapp-float:hover { background-color: #128c7e; color: #FFF; transform: scale(1.1) translateY(-5px); }
+        @keyframes pulse-whatsapp { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
+
         @media (max-width: 768px) {
             .mobile-bottom-nav { display: block; }
             body { padding-bottom: 70px; }
-            .whatsapp-float { bottom: 90px; }
+            .whatsapp-float { bottom: 95px; right: 20px; width: 50px; height: 50px; font-size: 28px; }
             .category-section-wrapper { padding: 20px; }
             .product-container { padding: 0 20px 20px 20px; }
         }
-
-        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 30px; right: 30px; background-color: #25d366; color: #FFF; border-radius: 50px; text-align: center; font-size: 35px; box-shadow: 2px 2px 15px rgba(37, 211, 102, 0.4); z-index: 1000; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease; animation: pulse-whatsapp 2s infinite; }
-        .whatsapp-float:hover { background-color: #128c7e; color: #FFF; transform: scale(1.1) translateY(-5px); }
-        @keyframes pulse-whatsapp { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
     </style>
 </head>
 <body>
@@ -291,7 +291,7 @@
                 <a href="{% url 'wishlist' %}" title="Wishlist"><i class="fa-solid fa-heart" style="color: #ef4444;"></i></a>
                 <a href="{% url 'profile' %}" title="Profile"><i class="fa-regular fa-user"></i></a>
             {% else %}
-                <a href="{% url 'login' %}" title="Login"><i class="fa-regular fa-user"></i></a>
+                <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}" title="Login"><i class="fa-regular fa-user"></i></a>
             {% endif %}
             <a href="#" onclick="openCart(event)" id="cart-nav-link" title="Cart">
                 <i class="fa-solid fa-bag-shopping"></i>
@@ -465,6 +465,11 @@
     </div>
 
     <!-- ========================================= -->
+    <!-- === LUXURY FOOTER (JERSEY MUSEUM BD) === -->
+    <!-- ========================================= -->
+    {% include 'store/includes/footer.html' %}
+
+    <!-- ========================================= -->
     <!-- === SMART CART WITH FREE SHIPPING METER === -->
     <!-- ========================================= -->
     <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
@@ -606,7 +611,7 @@
 
         function selectSize(productId, sizeName, element) { let container = document.getElementById('variants-' + productId); let spans = container.getElementsByTagName('span'); let hiddenInput = document.getElementById('size-' + productId); let isAlreadySelected = element.classList.contains('selected-size'); for(let span of spans) { span.classList.remove('selected-size'); span.style.background = 'transparent'; span.style.color = '#cbd5e1'; } if (isAlreadySelected) { hiddenInput.value = ''; } else { element.classList.add('selected-size'); hiddenInput.value = sizeName; container.classList.remove('shake-error'); } }
 
-        async function toggleWishlist(e, btn, productId) { e.preventDefault(); const isAuthenticated = "{{ request.user.is_authenticated }}" === "True"; if (!isAuthenticated) return window.location.href = "{% url 'login' %}"; try { const response = await fetch(`/wishlist/toggle/${productId}/`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }); if (response.ok) { const data = await response.json(); if (data.status === 'added') btn.classList.add('active'); else btn.classList.remove('active'); } } catch (error) { console.error('Wishlist Error:', error); } }
+        async function toggleWishlist(e, btn, productId) { e.preventDefault(); const isAuthenticated = "{{ request.user.is_authenticated }}" === "True"; if (!isAuthenticated) return window.location.href = "{% url 'login' %}?next=" + encodeURIComponent(window.location.pathname + window.location.search); try { const response = await fetch(`/wishlist/toggle/${productId}/`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }); if (response.ok) { const data = await response.json(); if (data.status === 'added') btn.classList.add('active'); else btn.classList.remove('active'); } } catch (error) { console.error('Wishlist Error:', error); } }
 
         function openCart(e) { if(e) e.preventDefault(); document.getElementById('cartSidebar').classList.add('active'); document.getElementById('cartOverlay').classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeCart() { document.getElementById('cartSidebar').classList.remove('active'); document.getElementById('cartOverlay').classList.remove('active'); document.body.style.overflow = 'auto'; }
